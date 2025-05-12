@@ -1,0 +1,112 @@
+import discord
+from discord.ext import commands
+import os
+import json
+import keep_alive
+
+keep_alive.keep_alive()
+
+token = os.environ["DISCORD_TOKEN"]
+
+
+intents = discord.Intents.default()
+intents.messages = True
+intents.message_content = True
+
+bot = commands.Bot(command_prefix="mb!", intents=intents)
+
+
+@bot.event
+async def on_ready():
+    print(f'Logged in as {bot.user}')
+    print("Bot is online!")
+
+
+@bot.command()
+async def test(ctx):
+    await ctx.send("Hello world!")
+
+
+user_data = {}
+
+if os.path.exists("levels.json"):
+    with open("levels.json", "r") as f:
+        user_data = json.load(f)
+else:
+    user_data = {}
+
+
+def save_levels():
+    with open("levels.json", "w") as f:
+        json.dump(user_data, f, indent=4)
+
+
+def check_level_up(user_id):
+    leveled_up = False
+    while user_data[user_id]["xp"] >= user_data[user_id][
+            "required_xp"]:  #If XP passes current level
+        user_data[user_id]["xp"] -= user_data[user_id]["required_xp"]
+        user_data[user_id]["level"] += 1
+        user_data[user_id]["required_xp"] = int(
+            user_data[user_id]["required_xp"] * 1.1)
+        leveled_up = True
+    return leveled_up
+
+
+@bot.event
+async def on_message(message):
+    if message.author.bot:
+        return
+
+    user_id = str(message.author.id)
+
+    if user_id not in user_data:  #user_data value in json
+        user_data[user_id] = {"xp": 0, "level": 0, "required_xp": 100}
+
+    user_data[user_id]["xp"] += 10  #Amount per message
+
+    if check_level_up(user_id):
+        await message.channel.send(
+            f"Congrats {message.author.mention}, you leveled up to **Level {new_level}!**"
+        )
+
+    save_levels()
+    await bot.process_commands(message)
+
+
+@bot.command()
+async def rank(ctx, member: discord.Member = None):
+    member = ctx.author
+    user_id = str(member.id)
+
+    if user_id in user_data:
+        xp = user_data[user_id]["xp"]
+        level = user_data[user_id]["level"]
+        req_xp = user_data[user_id]["required_xp"]
+
+        await ctx.send(
+            f"{member.mention} is **Level {level}**, **{xp} / {req_xp} XP**")
+    else:
+        await ctx.send(f"{member.mention}, you have no XP yet.")
+
+
+@bot.command()
+async def lb(ctx):
+    top_users = sorted(user_data.items(),
+                       key=lambda x: (x[1]["level"], x[1]["xp"]),
+                       reverse=True)[:10]
+
+    leaderboard_message = ""
+
+    for i, (user_id, data) in enumerate(top_users, start=1):
+
+        member = await ctx.guild.fetch_member(user_id)
+        name = member.display_name
+        req_xp = user_data[user_id]["required_xp"]
+
+        leaderboard_message += f"{i}. `{name}` Level {data['level']} - {data['xp']} XP / {req_xp} XP \n"
+
+    await ctx.send(leaderboard_message)
+
+
+bot.run(token)
