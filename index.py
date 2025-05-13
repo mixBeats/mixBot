@@ -4,6 +4,7 @@ import os
 import json
 intents = discord.Intents.default()
 intents.messages = True
+intents.message_content = True
 
 bot = commands.Bot(command_prefix="mb!", intents=intents)
 
