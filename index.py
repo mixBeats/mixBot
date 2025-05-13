@@ -2,19 +2,10 @@ import discord
 from discord.ext import commands
 import os
 import json
-import keep_alive
-
-keep_alive.keep_alive()
-
-token = os.environ["DISCORD_TOKEN"]
-
-
 intents = discord.Intents.default()
 intents.messages = True
-intents.message_content = True
 
 bot = commands.Bot(command_prefix="mb!", intents=intents)
-
 
 @bot.event
 async def on_ready():
@@ -39,7 +30,7 @@ else:
 def save_levels():
     with open("levels.json", "w") as f:
         json.dump(user_data, f, indent=4)
-
+        
 
 def check_level_up(user_id):
     leveled_up = False
@@ -60,23 +51,24 @@ async def on_message(message):
 
     user_id = str(message.author.id)
 
-    if user_id not in user_data:  #user_data value in json
+    if user_id not in user_data:
         user_data[user_id] = {"xp": 0, "level": 0, "required_xp": 100}
 
-    user_data[user_id]["xp"] += 10  #Amount per message
+    user_data[user_id]["xp"] += 10  # Amount per message
 
     if check_level_up(user_id):
-        await message.channel.send(
-            f"Congrats {message.author.mention}, you leveled up to **Level {new_level}!**"
-        )
+        await message.channel.send(f"Congrats {message.author.mention}, you leveled up to **Level {user_data[user_id]['level']}!**")
 
     save_levels()
+
     await bot.process_commands(message)
 
 
 @bot.command()
 async def rank(ctx, member: discord.Member = None):
-    member = ctx.author
+    if member is None:
+      member = ctx.author
+  
     user_id = str(member.id)
 
     if user_id in user_data:
@@ -100,7 +92,7 @@ async def lb(ctx):
 
     for i, (user_id, data) in enumerate(top_users, start=1):
 
-        member = await ctx.guild.fetch_member(user_id)
+        member = await ctx.guild.fetch_member(str(user_id))
         name = member.display_name
         req_xp = user_data[user_id]["required_xp"]
 
@@ -108,5 +100,4 @@ async def lb(ctx):
 
     await ctx.send(leaderboard_message)
 
-
-bot.run(token)
+bot.run(os.environ["TOKEN"])
