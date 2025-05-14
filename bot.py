@@ -40,7 +40,7 @@ def check_level_up(user_id):
         user_data[user_id]["xp"] -= user_data[user_id]["required_xp"]
         user_data[user_id]["level"] += 1
         user_data[user_id]["required_xp"] = int(
-            user_data[user_id]["required_xp"] * 1.1)
+            user_data[user_id]["required_xp"] * 1.2)
         leveled_up = True
     return leveled_up
 
