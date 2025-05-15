@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 import os
 import json
+import shutil
+
 intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
@@ -11,7 +13,6 @@ bot = commands.Bot(command_prefix="mb!", intents=intents)
 LEVEL_FILE = "/data/levels.json"
 
 if os.path.isdir(LEVEL_FILE):
-    import shutil
     shutil.rmtree(LEVEL_FILE)
 
 @bot.event
