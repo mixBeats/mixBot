@@ -29,7 +29,7 @@ else:
 
 
 def save_levels():
-    with open("/data/levels.json) as f:
+    with open("/data/levels.json") as f:
         json.dump(user_data, f, indent=4)
         
 
