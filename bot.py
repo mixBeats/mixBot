@@ -21,19 +21,15 @@ async def test(ctx):
 
 user_data = {}
 
+# old os.path code goes here
 
-def load_levels():
-    if not os.path.exists(LEVEL_FILE):
-        with open(LEVEL_FILE, "w") as f:
-            json.dump({}, f)
-    with open(LEVEL_FILE, "r") as f:
-        return json.load(f)
+if os.path.isdir(LEVEL_FILE):
+    shutil.rmtree(LEVEL_FILE)
+    print("Fixed: Removed directory that should be a file.")
 
 def save_levels():
     with open(LEVEL_FILE, "w") as f:
         json.dump(user_data, f, indent=4)
-        
-load_levels()
 
 def check_level_up(user_id):
     leveled_up = False
