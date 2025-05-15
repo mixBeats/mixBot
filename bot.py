@@ -8,6 +8,8 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix="mb!", intents=intents)
 
+LEVEL_FILE = "/data/levels.json"
+
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user}')
@@ -21,15 +23,15 @@ async def test(ctx):
 
 user_data = {}
 
-if os.path.exists("/data/levels.json"):
-    with open("/data/levels.json", "r") as f:
+if os.path.exists(LEVEL_FILE):
+    with open(LEVEL_FILE, "r") as f:
         user_data = json.load(f)
 else:
     user_data = {}
 
 
 def save_levels():
-    with open("/data/levels.json") as f:
+    with open(LEVEL_FILE) as f:
         json.dump(user_data, f, indent=4)
         
 
