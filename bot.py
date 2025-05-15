@@ -21,6 +21,7 @@ async def test(ctx):
 
 user_data = {}
 
+
 def load_levels():
     if not os.path.exists(LEVEL_FILE):
         with open(LEVEL_FILE, "w") as f:
@@ -32,6 +33,7 @@ def save_levels():
     with open(LEVEL_FILE, "w") as f:
         json.dump(user_data, f, indent=4)
         
+load_levels()
 
 def check_level_up(user_id):
     leveled_up = False
