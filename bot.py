@@ -149,7 +149,7 @@ async def mute(ctx, member: discord.Member = None, duration: str = "None", *, re
         amount = int(duration[:-1])
         unit = duration[-1]
         seconds = amount * time[unit]
-    except (ValueError, KeyError)
+    except (ValueError, KeyError):
         await ctx.send("Use correct format, `s/m/h/d Eg. 5s, 10m, 15h, 25d")
         return
 
