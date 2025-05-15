@@ -116,6 +116,47 @@ async def ban(ctx, member: discord.Member = None, *, reason = "No reason provide
         return
     
     await member.ban(reason=reason)
-    await ctx.send(f"{member.mention} is banned, Reason: {reason}")
+    try:
+        await ctx.send(f"{member.mention} is banned, Reason: {reason}")
+    except discord.forbidden:
+        await ctx.send("Cannot ban member, access denided")
+
+@bot.command()
+async def kick(ctx, member: discord.Member = None, *, reason = "No reason provided"):
+    if not ctx.author.guild_permissions.kick_members:
+        await ctx.send("You don't have premission to kick members")
+        return
+        
+    if member is None:
+        await ctx.send("Missing member `mb!kick [@member] [reason(optional)]`")
+        return
+    
+    await member.kick(reason=reason)
+    try:
+        await ctx.send(f"{member.mention} is kicked, Reason: {reason}")
+    except discord.forbidden:
+        await ctx.send("Cannot kick member, access denided")
+
+@bot.command()
+async def mute(ctx, member: discord.Member = None, duration: str = "None", *, reason = "No reason provided"):
+    if member is None or duration is None:
+        await ctx.send("Missing member duration" `mb!mute [@member] [duration(s)] [reason(Optional]`")
+        return
+
+    time = {"s": 1, "m": 60, "h": 3600, "d": 86400}
+
+    try:
+        amount = int(duration[:-1])
+        unit = duration[-1]
+        seconds = amount * time[unit]
+    exception(ValueError, KeyError)
+        await ctx.send("Use correct format, `s/m/h/d Eg. 5s, 10m, 15h, 25d")
+        return
+
+    try:
+        await member.timeout(timedelta(seconds=seconds), reason=reason)
+        await ctx.send("{member.mention} has been muted for {duration}, Reason: {reason}")
+    except discord.forbidden:
+        await ctx.send("Cannot mute member, access denided")
 
 bot.run(os.environ["TOKEN"])
