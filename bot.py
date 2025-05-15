@@ -15,23 +15,21 @@ async def on_ready():
     print(f'Logged in as {bot.user}')
     print("Bot is online!")
 
-
 @bot.command()
 async def test(ctx):
     await ctx.send("Hello world!")
 
-
 user_data = {}
 
-if os.path.exists(LEVEL_FILE):
+def load_levels():
+    if not os.path.exists(LEVEL_FILE):
+        with open(LEVEL_FILE, "w") as f:
+            json.dump({}, f)
     with open(LEVEL_FILE, "r") as f:
-        user_data = json.load(f)
-else:
-    user_data = {}
-
+        return json.load(f)
 
 def save_levels():
-    with open(LEVEL_FILE) as f:
+    with open(LEVEL_FILE, "w") as f:
         json.dump(user_data, f, indent=4)
         
 
