@@ -47,9 +47,15 @@ def check_level_up(user_id):
 
 @bot.event
 async def on_message(message):
-    if message.author.bot:
+
+cooldown = 0
+
+cooldown = cooldown + 1
+    
+    if message.author.bot && cooldown > 5:
         return
 
+    cooldown = 0;
     user_id = str(message.author.id)
 
     if user_id not in user_data:
