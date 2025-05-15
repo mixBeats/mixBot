@@ -10,6 +10,10 @@ bot = commands.Bot(command_prefix="mb!", intents=intents)
 
 LEVEL_FILE = "/data/levels.json"
 
+if os.path.isdir(LEVEL_FILE):
+    import shutil
+    shutil.rmtree(LEVEL_FILE)
+
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user}')
@@ -21,11 +25,11 @@ async def test(ctx):
 
 user_data = {}
 
-# old os.path code goes here
-
-if os.path.isdir(LEVEL_FILE):
-    shutil.rmtree(LEVEL_FILE)
-    print("Fixed: Removed directory that should be a file.")
+if os.path.exists(LEVEL_FILE):
+    with open(LEVEL_FILE, "r") as f:
+        user_data = json.load(f)
+else:
+    user_data = {}
 
 def save_levels():
     with open(LEVEL_FILE, "w") as f:
