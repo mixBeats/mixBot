@@ -120,7 +120,7 @@ async def ban(ctx, member: discord.Member = None, *, reason = "No reason provide
     try:
         await ctx.send(f"{member.mention} is banned, Reason: {reason}")
     except discord.Forbidden:
-        await ctx.send("Cannot ban member, access denided")
+        await ctx.send("Cannot ban member, access denied")
 
 @bot.command()
 async def kick(ctx, member: discord.Member = None, *, reason = "No reason provided"):
@@ -136,7 +136,7 @@ async def kick(ctx, member: discord.Member = None, *, reason = "No reason provid
     try:
         await ctx.send(f"{member.mention} is kicked, Reason: {reason}")
     except discord.Forbidden:
-        await ctx.send("Cannot kick member, access denided")
+        await ctx.send("Cannot kick member, access denied")
 
 @bot.command()
 async def mute(ctx, member: discord.Member = None, duration: str = "None", *, reason = "No reason provided"):
@@ -158,6 +158,6 @@ async def mute(ctx, member: discord.Member = None, duration: str = "None", *, re
         await member.timeout(timedelta(seconds=seconds), reason=reason)
         await ctx.send("{member.mention} has been muted for {duration}, Reason: {reason}")
     except discord.Forbidden:
-        await ctx.send("Cannot mute member, access denided")
+        await ctx.send("Cannot mute member, access denied")
 
 bot.run(os.environ["TOKEN"])
