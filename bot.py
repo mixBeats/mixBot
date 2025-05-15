@@ -22,7 +22,7 @@ async def test(ctx):
 user_data = {}
 
 if os.path.exists("/data/levels.json"):
-    with open("levels.json", "r") as f:
+    with open("/data/levels.json", "r") as f:
         user_data = json.load(f)
 else:
     user_data = {}
