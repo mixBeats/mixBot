@@ -21,7 +21,7 @@ async def test(ctx):
 
 user_data = {}
 
-if os.path.exists("levels.json"):
+if os.path.exists("/data/levels.json"):
     with open("levels.json", "r") as f:
         user_data = json.load(f)
 else:
@@ -29,7 +29,7 @@ else:
 
 
 def save_levels():
-    with open("levels.json", "w") as f:
+    with open("/data/levels.json) as f:
         json.dump(user_data, f, indent=4)
         
 
