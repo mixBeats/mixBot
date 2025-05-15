@@ -151,12 +151,12 @@ async def mute(ctx, member: discord.Member = None, duration: str = "None", *, re
         unit = duration[-1]
         seconds = amount * time[unit]
     except (ValueError, KeyError):
-        await ctx.send("Use correct format, `s/m/h/d Eg. 5s, 10m, 15h, 25d")
+        await ctx.send("Use correct format, `s/m/h/d Eg. 5s, 10m, 15h, 25d`")
         return
 
     try:
         await member.timeout(timedelta(seconds=seconds), reason=reason)
-        await ctx.send("{member.mention} has been muted for {duration}, Reason: {reason}")
+        await ctx.send(f"{member.mention} has been muted for {duration}, Reason: {reason}")
     except discord.Forbidden:
         await ctx.send("Cannot mute member, access denied")
 
