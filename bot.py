@@ -115,6 +115,6 @@ async def ban(ctx, member: discord.Member, *, reason = "No reason provided"):
         return
     
     await member.ban(reason=reason)
-    await ctx.send_message(f"{member.mention} is banned, Reason: {reason}")
+    await ctx.send(f"{member.mention} is banned, Reason: {reason}")
 
 bot.run(os.environ["TOKEN"])
