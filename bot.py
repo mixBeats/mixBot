@@ -140,7 +140,7 @@ async def kick(ctx, member: discord.Member = None, *, reason = "No reason provid
 @bot.command()
 async def mute(ctx, member: discord.Member = None, duration: str = "None", *, reason = "No reason provided"):
     if member is None or duration is None:
-        await ctx.send("Missing member duration" `mb!mute [@member] [duration(s)] [reason(Optional]`")
+        await ctx.send("Missing member or duration `mb!mute [@member] [duration(s)] [reason(Optional]`")
         return
 
     time = {"s": 1, "m": 60, "h": 3600, "d": 86400}
