@@ -104,7 +104,7 @@ async def lb(ctx):
 
 @bot.command()
 async def ban(ctx, member: discord.Member, *, reason = "No reason provided"):
-    if not ctx.user.guild_premission.ban_members:
+    if not ctx.author.guild_premission.ban_members:
         await ctx.send("You don't have premission to ban members")
     if not member:
         await ctx.send("Missing member `mb!ban {member} {reason(optional)}`")
