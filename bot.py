@@ -107,4 +107,14 @@ async def lb(ctx):
 
     await ctx.send(leaderboard_message)
 
+@bot.command()
+@bot.has_permissions(ban_members=True)
+async def ban(ctx, member: discord.Member, *, reason = "No reason provided"):
+    if not ctx.user.guild_premission.ban_members:
+        await interaction.response.send_message("You don't have premission to ban members")
+        return
+    
+    await member.ban(reason=reason)
+    await ctx.send_message(f"{member.mention} is banned, Reason: {reason}")
+
 bot.run(os.environ["TOKEN"])
