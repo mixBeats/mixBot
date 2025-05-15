@@ -10,7 +10,7 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix="mb!", intents=intents)
 
-LEVEL_FILE = "/data/levels.json"
+LEVEL_FILE = "levels.json"
 
 if os.path.isdir(LEVEL_FILE):
     shutil.rmtree(LEVEL_FILE)
