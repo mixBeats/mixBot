@@ -177,11 +177,11 @@ async def bal(ctx, member: discord.member = None):
     with open("balance.json", "r") as f:
         balance = json.load(f)
 
-coins = balance.get(user_id, 0)
-fragments = balance.get(user_id, 0)
-quartz = balance.get(user_id, 0)
+    coins = balance.get(user_id, 0)
+    fragments = balance.get(user_id, 0)
+    quartz = balance.get(user_id, 0)
 
-await ctx.send(f"{member.mention} Coins: {coins}, Fragments: {fragments}, Quartz: {quartz}")
+    await ctx.send(f"{member.mention} Coins: {coins}, Fragments: {fragments}, Quartz: {quartz}")
 
 @bot.command()
 async def givecoin(ctx, member: discord.member, amount: int):
