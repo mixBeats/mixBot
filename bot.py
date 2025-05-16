@@ -186,6 +186,7 @@ async def bal(ctx, member: discord.member = None):
 @bot.command()
 async def givecoin(ctx, member: discord.member, amount: int):
     user_id = str(ctx.author.id)
+    member = member or ctx.author
     
     with open("balance.json", "r") as f:
         balance = json.load(f)
