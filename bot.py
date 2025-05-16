@@ -184,7 +184,7 @@ quartz = balance.get(user_id, 0)
 await ctx.send(f"{member.mention} Coins: {coins}, Fragments: {fragments}, Quartz: {quartz}")
 
 @bot.command()
-async def giveCoin(ctx, member: discord.member = None, amount: int):
+async def givecoin(ctx, member: discord.member, amount: int):
     user_id = str(ctx.author.id)
     
     with open("balance.json", "r") as f:
