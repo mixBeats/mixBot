@@ -160,4 +160,41 @@ async def mute(ctx, member: discord.Member = None, duration: str = "None", *, re
     except discord.Forbidden:
         await ctx.send("Cannot mute member, access denied")
 
+def save_balance():
+    with open("balance.json", "r") as f:
+        json.dump("balance.json", f, indent=4)
+
+@bot.command()
+async def bal(ctx, member: discord.member = None):
+
+    member = member or ctx.author
+    user_id = str(ctx.author.id)
+
+    if not os.path.exists("balance.json"):
+        with open("balance.json", "w") as f:
+            json.dump({}, f)
+
+    with open("balance.json", "r") as f:
+        balance = json.load(f)
+
+coins = balance.get(user_id, 0)
+fragments = balance.get(user_id, 0)
+quartz = balance.get(user_id, 0)
+
+await ctx.send(f"{member.mention} Coins: {coins}, Fragments: {fragments}, Quartz: {quartz}")
+
+@bot.command()
+async def giveCoin(ctx, member: discord.member = None, amount: int):
+    user_id = str(ctx.author.id)
+    
+    with open("balance.json", "r") as f:
+        balance = json.load(f)
+
+    balance[user_id] = balance.get(user_id, 0) + amount
+
+    with open("balance.json", "w") as f:
+        json.dump(balance, f, indent=4)
+
+await ctx.send(f"Sent {amount} Coins to {member.mention}")
+
 bot.run(os.environ["TOKEN"])
