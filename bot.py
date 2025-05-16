@@ -165,7 +165,7 @@ def save_balance():
         json.dump("balance.json", f, indent=4)
 
 @bot.command()
-async def bal(ctx, member: discord.member = None):
+async def bal(ctx, member: discord.Member = None):
 
     member = member or ctx.author
     user_id = str(ctx.author.id)
@@ -184,9 +184,12 @@ async def bal(ctx, member: discord.member = None):
     await ctx.send(f"{member.mention} Coins: {coins}, Fragments: {fragments}, Quartz: {quartz}")
 
 @bot.command()
-async def givecoin(ctx, member: discord.member, amount: int):
+async def givecoin(ctx, member: discord.Member, amount: int):
     user_id = str(ctx.author.id)
     member = member or ctx.author
+
+    if not member or not amount:
+        await ctx.send("Missing member or amount `mb!givecoin [@mention] [amount]`")
     
     with open("balance.json", "r") as f:
         balance = json.load(f)
