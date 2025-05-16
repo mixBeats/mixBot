@@ -196,7 +196,6 @@ async def givecoin(ctx, member: discord.Member, amount: int):
 
     if user_id not in balance:
         balance[user_id] = {}
-        await ctx.send("You do not have any balance yet")
     if "coin" not in balance[user_id]:
         balance[user_id]["coin"] = 0
 
