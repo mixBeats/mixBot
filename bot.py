@@ -194,7 +194,7 @@ async def givecoin(ctx, member: discord.Member, amount: int):
     with open("balance.json", "r") as f:
         balance = json.load(f)
 
-    balance[user_id] = balance.get(user_id, 0) + amount
+    balance[user_id]["coin"] = balance.get(user_id, 0) + amount
 
     with open("balance.json", "w") as f:
         json.dump(balance, f, indent=4)
