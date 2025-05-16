@@ -181,7 +181,7 @@ async def bal(ctx, member: discord.Member = None):
     fragments = balance.get(user_id, 0)
     quartz = balance.get(user_id, 0)
 
-    await ctx.send(f"{member.mention} Coins: {coins}, Fragments: {fragments}, Quartz: {quartz}")
+    await ctx.send(f"{member.mention} Coins: {[user_id]["coin"]}, Fragments: {[user_id]["fragments"]}, Quartz: {[user_id]["quartz"]}")
 
 @bot.command()
 async def givecoin(ctx, member: discord.Member, amount: int):
