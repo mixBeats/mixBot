@@ -195,6 +195,6 @@ async def givecoin(ctx, member: discord.member, amount: int):
     with open("balance.json", "w") as f:
         json.dump(balance, f, indent=4)
 
-await ctx.send(f"Sent {amount} Coins to {member.mention}")
+    await ctx.send(f"Sent {amount} Coins to {member.mention}")
 
 bot.run(os.environ["TOKEN"])
