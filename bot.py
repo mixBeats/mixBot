@@ -12,6 +12,7 @@ intents.message_content = True
 bot = commands.Bot(command_prefix="mb!", intents=intents)
 
 LEVEL_FILE = "/data/levels.json"
+BALANCE_FILE = "/data/balance.json"
 
 if os.path.isdir(LEVEL_FILE):
     shutil.rmtree(LEVEL_FILE)
@@ -170,11 +171,11 @@ async def bal(ctx, member: discord.Member = None):
     member = member or ctx.author
     user_id = str(ctx.author.id)
 
-    if not os.path.exists("balance.json"):
-        with open("balance.json", "w") as f:
+    if not os.path.exists(BALANCE_FILE):
+        with open(BALANCE_FILE, "w") as f:
             json.dump({}, f)
 
-    with open("balance.json", "r") as f:
+    with open(BALANCE_FILE, "r") as f:
         balance = json.load(f)
 
     coins = balance.get(user_id, {}).get("coin", 0)
@@ -191,7 +192,7 @@ async def givecoin(ctx, member: discord.Member, amount: int):
     if not member or not amount:
         await ctx.send("Missing member or amount `mb!givecoin [@mention] [amount]`")
     
-    with open("balance.json", "r") as f:
+    with open(BALANCE_FILE, "r") as f:
         balance = json.load(f)
 
     if user_id not in balance:
@@ -201,7 +202,7 @@ async def givecoin(ctx, member: discord.Member, amount: int):
 
     balance[user_id]["coin"] += amount
 
-    with open("balance.json", "w") as f:
+    with open(BALANCE_FILE, "w") as f:
         json.dump(balance, f, indent=4)
 
     await ctx.send(f"Sent {amount} Coins to {member.mention}")
