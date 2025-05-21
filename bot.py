@@ -186,10 +186,10 @@ async def bal(ctx, member: discord.Member = None):
 
 @bot.command()
 async def givecoin(ctx, member: discord.Member, amount: int):
-    user_id = str(member.id)
+    user_id = str(ctx.author.id)
     member = str(member.id)
 
-    if not member or not amount:
+    if not user_id or not amount:
         await ctx.send("Missing member or amount `mb!givecoin [@mention] [amount]`")
     
     with open(BALANCE_FILE, "r") as f:
@@ -200,11 +200,11 @@ async def givecoin(ctx, member: discord.Member, amount: int):
     if "coin" not in balance[user_id]:
         balance[user_id]["coin"] = 0
 
-    balance[user_id]["coin"] += amount
+    balance[member]["coin"] += amount
 
     with open(BALANCE_FILE, "w") as f:
         json.dump(balance, f, indent=4)
 
-    await ctx.send(f"Sent {amount} Coins to {member.mention}")
+    await ctx.send(f"Gave {amount} Coins to {member.mention}")
 
 bot.run(os.environ["TOKEN"])
