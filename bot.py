@@ -169,7 +169,7 @@ def save_balance():
 async def bal(ctx, member: discord.Member = None):
 
     member = member or ctx.author
-    user_id = str(ctx.author.id)
+    user_id = str(member.id)
 
     if not os.path.exists(BALANCE_FILE):
         with open(BALANCE_FILE, "w") as f:
