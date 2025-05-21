@@ -6,7 +6,6 @@ import shutil
 from datetime import timedelta
 
 from commands import currency
-currency.cur(bot)
 
 intents = discord.Intents.default()
 intents.messages = True
@@ -167,5 +166,7 @@ async def mute(ctx, member: discord.Member = None, duration: str = "None", *, re
 def save_balance():
     with open("balance.json", "r") as f:
         json.dump("balance.json", f, indent=4)
+
+currency.cur(bot)
 
 bot.run(os.environ["TOKEN"])
