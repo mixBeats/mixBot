@@ -187,9 +187,8 @@ async def bal(ctx, member: discord.Member = None):
 @bot.command()
 async def givecoin(ctx, member: discord.Member, amount: int):
     user_id = str(ctx.author.id)
-    member = member or ctx.author
 
-    if not member or not amount:
+    if not ctx.author.id or not amount:
         await ctx.send("Missing member or amount `mb!givecoin [@mention] [amount]`")
     
     with open(BALANCE_FILE, "r") as f:
