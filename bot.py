@@ -12,6 +12,7 @@ intents.messages = True
 intents.message_content = True
 
 bot = commands.Bot(command_prefix="mb!", intents=intents)
+bot.load_extension("commands.currency")
 
 LEVEL_FILE = "/data/levels.json"
 BALANCE_FILE = "/data/balance.json"
