@@ -172,6 +172,4 @@ def save_balance():
     with open("balance.json", "r") as f:
         json.dump("balance.json", f, indent=4)
 
-currency.cur(bot)
-
 bot.run(os.environ["TOKEN"])
