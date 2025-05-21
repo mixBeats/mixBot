@@ -188,7 +188,6 @@ async def bal(ctx, member: discord.Member = None):
 async def givecoin(ctx, member: discord.Member, amount: int):
     user_id = str(ctx.author.id)
     reveicer = str(member.id)
-    member = member or ctx.author
 
     if not user_id or not amount:
         await ctx.send("Missing member or amount `mb!givecoin [@mention] [amount]`")
