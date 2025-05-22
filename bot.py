@@ -13,8 +13,6 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix="mb!", intents=intents)
 
-currency.cur()
-
 LEVEL_FILE = "/data/levels.json"
 BALANCE_FILE = "/data/balance.json"
 
@@ -168,5 +166,7 @@ async def mute(ctx, member: discord.Member = None, duration: str = "None", *, re
 def save_balance():
     with open("balance.json", "r") as f:
         json.dump("balance.json", f, indent=4)
+
+currency.cur(bot)
 
 bot.run(os.environ["TOKEN"])
