@@ -1,9 +1,7 @@
 from discord.ext import commands
 import discord
 
-class currencyCommands(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
+def cur():
 
     @bot.command()
     async def bal(ctx, member: discord.Member = None):
@@ -46,6 +44,3 @@ class currencyCommands(commands.Cog):
             json.dump(balance, f, indent=4)
     
         await ctx.send(f"Gave {amount} Coins to {member.mention}")
-
-def setup(bot):
-    bot.add_Cog(currencyCommands(bot))
