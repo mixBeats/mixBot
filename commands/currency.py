@@ -1,7 +1,7 @@
 from discord.ext import commands
 import discord
 
-def cur():
+def cur(bot):
 
     @bot.command()
     async def bal(ctx, member: discord.Member = None):
