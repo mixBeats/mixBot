@@ -7,7 +7,7 @@ class Currency(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @bot.command()
+    @commands.command()
     async def bal(self, ctx, member: discord.Member = None):
     
         member = member or ctx.author
@@ -26,7 +26,7 @@ class Currency(commands.Cog):
     
         await ctx.send(f"{member.mention} Coins: {coins}, Fragments: {fragments}, Quartz: {quartz}")
     
-    @bot.command()
+    @commands.command()
     async def givecoin(self, ctx, member: discord.Member, amount: int):
         user_id = str(ctx.author.id)
         receiver = str(member.id)
