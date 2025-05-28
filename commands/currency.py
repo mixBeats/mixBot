@@ -1,6 +1,9 @@
 from discord.ext import commands
+import discord
+import json
+import os
 
-Class Currency(commands.Cog):
+class Currency(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -26,7 +29,7 @@ Class Currency(commands.Cog):
     @commands.command()
     async def givecoin(self, ctx, member: discord.Member, amount: int):
         user_id = str(ctx.author.id)
-        reveicer = str(member.id)
+        receiver = str(member.id)
     
         if not user_id or not amount:
             await ctx.send("Missing member or amount `mb!givecoin [@mention] [amount]`")
@@ -39,7 +42,7 @@ Class Currency(commands.Cog):
         if "coin" not in balance[user_id]:
             balance[user_id]["coin"] = 0
     
-        balance[reveicer]["coin"] += amount
+        balance[receiver]["coin"] += amount
     
         with open(BALANCE_FILE, "w") as f:
             json.dump(balance, f, indent=4)
