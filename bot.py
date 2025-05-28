@@ -24,6 +24,10 @@ async def on_ready():
     print(f'Logged in as {bot.user}')
     print("Bot is online!")
 
+    for filename in os.listdir('./commands'):
+    if filename.endswith('.py') and filename != '__init__.py':
+        bot.load_extension(f'cogs.currency')
+
 @bot.command()
 async def test(ctx):
     await ctx.send("Hello world!")
@@ -166,9 +170,5 @@ async def mute(ctx, member: discord.Member = None, duration: str = "None", *, re
 def save_balance():
     with open("balance.json", "r") as f:
         json.dump("balance.json", f, indent=4)
-
-for filename in os.listdir('./commands'):
-    if filename.endswith('.py') and filename != '__init__.py':
-        bot.load_extension(f'cogs.currency')
 
 bot.run(os.environ["TOKEN"])
