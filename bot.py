@@ -27,7 +27,7 @@ async def on_ready():
     for filename in os.listdir('./commands'):
         if filename.endswith('.py') and filename != '__init__.py':
             try:
-                await bot.load_extension(f'commands.{filename[:-3]}')
+                bot.load_extension(f'commands.{filename[:-3]}')
                 print(f"Loaded {filename}")
             except Exception as e:
                 print(f"Failed to load {filename}: {e}")
