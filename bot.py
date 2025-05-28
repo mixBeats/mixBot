@@ -23,10 +23,8 @@ if os.path.isdir(LEVEL_FILE):
 async def on_ready():
     print(f'Logged in as {bot.user}')
     print("Bot is online!")
-
-    for filename in os.listdir('./commands'):
-        if filename.endswith('.py') and filename != '__init__.py':
-            bot.load_extension(f'cogs.currency')
+    
+    bot.load_extension(f'commands.currency')
 
 @bot.command()
 async def test(ctx):
