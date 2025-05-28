@@ -1,12 +1,11 @@
 from discord.ext import commands
-import discord
 
 Class Currency(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @bot.command()
-    async def bal(ctx, member: discord.Member = None):
+    @commands.command()
+    async def bal(self, ctx, member: discord.Member = None):
     
         member = member or ctx.author
         user_id = str(member.id)
@@ -24,8 +23,8 @@ Class Currency(commands.Cog):
     
         await ctx.send(f"{member.mention} Coins: {coins}, Fragments: {fragments}, Quartz: {quartz}")
     
-    @bot.command()
-    async def givecoin(ctx, member: discord.Member, amount: int):
+    @commands.command()
+    async def givecoin(self, ctx, member: discord.Member, amount: int):
         user_id = str(ctx.author.id)
         reveicer = str(member.id)
     
