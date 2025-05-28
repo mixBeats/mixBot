@@ -25,8 +25,8 @@ async def on_ready():
     print("Bot is online!")
 
     for filename in os.listdir('./commands'):
-    if filename.endswith('.py') and filename != '__init__.py':
-        bot.load_extension(f'cogs.currency')
+        if filename.endswith('.py') and filename != '__init__.py':
+            bot.load_extension(f'cogs.currency')
 
 @bot.command()
 async def test(ctx):
