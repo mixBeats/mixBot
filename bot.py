@@ -167,6 +167,8 @@ def save_balance():
     with open("balance.json", "r") as f:
         json.dump("balance.json", f, indent=4)
 
-currency.cur(bot)
+for filename in os.listdir('./cogs'):
+    if filename.endswith('.py') and filename != '__init__.py':
+        bot.load_extension(f'cogs.{filename[:-3]}')
 
 bot.run(os.environ["TOKEN"])
