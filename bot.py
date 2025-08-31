@@ -1,11 +1,11 @@
 import discord
+from discord.ext import commands
 import os
 import json
 import shutil
 from datetime import timedelta
 
 intents = discord.Intents.default()
-intents.messages = True
 intents.message_content = True
 
 bot = commands.Bot(command_prefix="mb!", intents=intents)
@@ -89,7 +89,7 @@ async def rank(ctx, member: discord.Member = None):
 
 @bot.command()
 async def say(ctx, *, message: str):
-await ctx.send(message)
+    await ctx.send(message)
 
 @bot.command()
 async def lb(ctx):
@@ -107,7 +107,7 @@ async def lb(ctx):
 
         leaderboard_message += f"{i}. `{name}` Level {data['level']} - {data['xp']} XP / {req_xp} XP \n"
 
-await ctx.send(leaderboard_message)
+    await ctx.send(leaderboard_message)
 
 @bot.command()
 async def ban(ctx, member: discord.Member = None, *, reason = "No reason provided"):
@@ -218,6 +218,7 @@ def save_balance():
         await ctx.send(f"Gave {amount} Coins to {member.mention}")
 
 bot.run(os.environ["TOKEN"])
+
 
 
 
