@@ -87,9 +87,6 @@ async def rank(ctx, member: discord.Member = None):
     else:
         await ctx.send(f"{member.mention}, you have no XP yet.")
 
-async def say(ctx, *, message: str):
-    await ctx.send(message)
-
 @bot.command()
 async def lb(ctx):
     top_users = sorted(user_data.items(),
@@ -216,7 +213,13 @@ def save_balance():
 
         await ctx.send(f"Gave {amount} Coins to {member.mention}")
 
+@bot.command()
+async def say(ctx, *, message: str):
+    print(f"{message.content}")
+    await ctx.send(message)
+
 bot.run(os.environ["TOKEN"])
+
 
 
 
