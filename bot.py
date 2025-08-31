@@ -23,14 +23,6 @@ if os.path.isdir(LEVEL_FILE):
 async def on_ready():
     print(f'Logged in as {bot.user}')
     print("Bot is online!")
-    
-    for filename in os.listdir('./commands'):
-        if filename.endswith('.py') and filename != '__init__.py':
-            try:
-                bot.load_extension(f'commands.{filename[:-3]}')
-                print(f"Loaded {filename}")
-            except Exception as e:
-                print(f"Failed to load {filename}: {e}")
 
 @bot.command()
 async def test(ctx):
@@ -227,3 +219,4 @@ def save_balance():
         await ctx.send(f"Gave {amount} Coins to {member.mention}")
 
 bot.run(os.environ["TOKEN"])
+
