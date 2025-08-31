@@ -227,8 +227,8 @@ def save_balance():
 
 @bot.command()
     async def say(ctx, *, message: str):
-        words
     await ctx.send(message)
 
 bot.run(os.environ["TOKEN"])
+
 
