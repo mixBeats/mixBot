@@ -215,10 +215,10 @@ def save_balance():
 
 @bot.command()
 async def say(ctx, *, message: str):
-    print(f"{message.content}")
-    await ctx.send(message)
+    await ctx.send("Test")
 
 bot.run(os.environ["TOKEN"])
+
 
 
 
