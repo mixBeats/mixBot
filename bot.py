@@ -1,5 +1,4 @@
 import discord
-from discord.ext import commands
 import os
 import json
 import shutil
@@ -219,5 +218,6 @@ def save_balance():
         await ctx.send(f"Gave {amount} Coins to {member.mention}")
 
 bot.run(os.environ["TOKEN"])
+
 
 
