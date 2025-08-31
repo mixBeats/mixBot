@@ -5,8 +5,6 @@ import json
 import shutil
 from datetime import timedelta
 
-from commands import currency
-
 intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
@@ -90,9 +88,11 @@ async def rank(ctx, member: discord.Member = None):
     else:
         await ctx.send(f"{member.mention}, you have no XP yet.")
 
+@bot.command()
 async def say(ctx, *, message: str):
 await ctx.send(message)
 
+@bot.command()
 async def lb(ctx):
     top_users = sorted(user_data.items(),
                        key=lambda x: (x[1]["level"], x[1]["xp"]),
@@ -219,4 +219,5 @@ def save_balance():
         await ctx.send(f"Gave {amount} Coins to {member.mention}")
 
 bot.run(os.environ["TOKEN"])
+
 
