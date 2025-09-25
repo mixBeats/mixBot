@@ -12,8 +12,6 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix="mb!", intents=intents)
 
-bot.add_cog(Currency(bot))
-
 LEVEL_FILE = "/data/levels.json"
 BALANCE_FILE = "/data/balance.json"
 
@@ -24,6 +22,7 @@ if os.path.isdir(LEVEL_FILE):
 async def on_ready():
     print(f'Logged in as {bot.user}')
     print("Bot is online!")
+    await bot.load_extension("cogs.currency")
     
 @bot.command()
 async def test(ctx):
@@ -222,6 +221,7 @@ async def say(ctx, *, message: str):
     await ctx.send("Test")
 
 bot.run(os.environ["TOKEN"])
+
 
 
 
