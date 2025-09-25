@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 import os
 import json
-import asyncio
 import shutil
 from datetime import timedelta
 
@@ -221,6 +220,7 @@ async def say(ctx, *, message: str):
     await ctx.send("Test")
 
 bot.run(os.environ["TOKEN"])
+
 
 
 
