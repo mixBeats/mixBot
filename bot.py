@@ -26,6 +26,7 @@ if os.path.isdir(LEVEL_FILE):
 async def on_ready():
     print(f'Logged in as {bot.user}')
     print("Bot is online!")
+    print("Cogs loaded:", bot.cogs.keys())
     print("Commands loaded:", [cmd.name for cmd in bot.commands])
     
 @bot.command()
@@ -230,6 +231,7 @@ async def main():
         await bot.start(os.environ["TOKEN"])
 
 asyncio.run(main())
+
 
 
 
