@@ -16,6 +16,7 @@ BALANCE_FILE = "/data/balance.json"
 for filename in os.listdir("./Cogs"):
     if filename.endswith(".py"):
         bot.load_extension(f"cogs.{filename[:-3]}")
+        print("Loaded extenstion:" filename);
 
 if os.path.isdir(LEVEL_FILE):
     shutil.rmtree(LEVEL_FILE)
@@ -222,6 +223,7 @@ async def say(ctx, *, message: str):
     await ctx.send("Test")
 
 bot.run(os.environ["TOKEN"])
+
 
 
 
