@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import os
 import json
+import asyncio
 import shutil
 from datetime import timedelta
 
@@ -223,7 +224,13 @@ def save_balance():
 async def say(ctx, *, message: str):
     await ctx.send("Test")
 
-bot.run(os.environ["TOKEN"])
+async def main():
+    async with bot:
+        await load_cogs()
+        await bot.start(os.environ["TOKEN"])
+
+asyncio.run(main())
+
 
 
 
