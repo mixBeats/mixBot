@@ -1,8 +1,9 @@
 import discord
 from discord.ext import commands
+from cogs.currency import Currency
+
 import os
 import json
-import asyncio
 import shutil
 from datetime import timedelta
 
@@ -11,13 +12,10 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix="mb!", intents=intents)
 
+bot.add_cog(Currency(bot))
+
 LEVEL_FILE = "/data/levels.json"
 BALANCE_FILE = "/data/balance.json"
-
-async def load_cogs():
-    for filename in os.listdir("./cogs"):
-        if filename.endswith(".py"):
-            await bot.load_extension(f"cogs.{filename[:-3]}")
 
 if os.path.isdir(LEVEL_FILE):
     shutil.rmtree(LEVEL_FILE)
@@ -225,12 +223,7 @@ def save_balance():
 async def say(ctx, *, message: str):
     await ctx.send("Test")
 
-async def main():
-    async with bot:
-        await load_cogs()
-        await bot.start(os.environ["TOKEN"])
-
-asyncio.run(main())
+bot.run(os.environ["TOKEN"])
 
 
 
