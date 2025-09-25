@@ -25,7 +25,7 @@ if os.path.isdir(LEVEL_FILE):
 async def on_ready():
     print(f'Logged in as {bot.user}')
     print("Bot is online!")
-
+    print("Commands loaded:", [cmd.name for cmd in bot.commands])
     
 @bot.command()
 async def test(ctx):
@@ -224,6 +224,7 @@ async def say(ctx, *, message: str):
     await ctx.send("Test")
 
 bot.run(os.environ["TOKEN"])
+
 
 
 
