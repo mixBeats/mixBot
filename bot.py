@@ -13,6 +13,10 @@ bot = commands.Bot(command_prefix="mb!", intents=intents)
 LEVEL_FILE = "/data/levels.json"
 BALANCE_FILE = "/data/balance.json"
 
+for filename in os.listdir("./Cogs"):
+    if filename.endswith(".py"):
+        bot.load_extension(f"cogs.{filename[:-3]}")
+
 if os.path.isdir(LEVEL_FILE):
     shutil.rmtree(LEVEL_FILE)
 
@@ -32,10 +36,6 @@ if os.path.exists(LEVEL_FILE):
         user_data = json.load(f)
 else:
     user_data = {}
-
-for filename in os.listdir("./cogs"):
-    if filename.endswith(".py"):
-        bot.load_extension(f"cogs.{filename[:-3]}")
 
 def save_levels():
     with open(LEVEL_FILE, "w") as f:
@@ -222,6 +222,7 @@ async def say(ctx, *, message: str):
     await ctx.send("Test")
 
 bot.run(os.environ["TOKEN"])
+
 
 
 
