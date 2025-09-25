@@ -33,6 +33,10 @@ if os.path.exists(LEVEL_FILE):
 else:
     user_data = {}
 
+for filename in os.listdir("./cogs"):
+    if filename.endswith(".py"):
+        bot.load_extension(f"cogs.{filename[:-3]}")
+
 def save_levels():
     with open(LEVEL_FILE, "w") as f:
         json.dump(user_data, f, indent=4)
@@ -218,6 +222,7 @@ async def say(ctx, *, message: str):
     await ctx.send("Test")
 
 bot.run(os.environ["TOKEN"])
+
 
 
 
