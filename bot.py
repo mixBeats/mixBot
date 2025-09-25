@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import os
 import json
+import asyncio
 import shutil
 from datetime import timedelta
 
@@ -15,7 +16,7 @@ BALANCE_FILE = "/data/balance.json"
 
 for filename in os.listdir("./Cogs"):
     if filename.endswith(".py"):
-        bot.load_extension(f"cogs.{filename[:-3]}")
+        await bot.load_extension(f"cogs.{filename[:-3]}")
         print("Loaded extenstion:" filename);
 
 if os.path.isdir(LEVEL_FILE):
@@ -222,8 +223,12 @@ def save_balance():
 async def say(ctx, *, message: str):
     await ctx.send("Test")
 
-bot.run(os.environ["TOKEN"])
+async def main():
+    async with bot:
+        await load_cogs()
+        await bot.start(os.environ["TOKEN"])
 
+asyncio.run(main())
 
 
 
