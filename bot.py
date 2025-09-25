@@ -14,10 +14,11 @@ bot = commands.Bot(command_prefix="mb!", intents=intents)
 LEVEL_FILE = "/data/levels.json"
 BALANCE_FILE = "/data/balance.json"
 
-for filename in os.listdir("./Cogs"):
-    if filename.endswith(".py"):
-        await bot.load_extension(f"cogs.{filename[:-3]}")
-        print("Loaded extenstion:" filename);
+async def load_Cogs():
+    for filename in os.listdir("./Cogs"):
+        if filename.endswith(".py"):
+            await bot.load_extension(f"cogs.{filename[:-3]}")
+            print("Loaded extenstion:" filename);
 
 if os.path.isdir(LEVEL_FILE):
     shutil.rmtree(LEVEL_FILE)
@@ -229,6 +230,7 @@ async def main():
         await bot.start(os.environ["TOKEN"])
 
 asyncio.run(main())
+
 
 
 
