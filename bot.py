@@ -13,6 +13,10 @@ bot = commands.Bot(command_prefix="mb!", intents=intents)
 LEVEL_FILE = "/data/levels.json"
 BALANCE_FILE = "/data/balance.json"
 
+async def load_cogs():
+    for filename in os.listdir("./Cogs"):
+        if filename.endswith(".py"):
+            await bot.load_extension(f"cogs.{filename[:-3]}")
 
 if os.path.isdir(LEVEL_FILE):
     shutil.rmtree(LEVEL_FILE)
@@ -21,7 +25,7 @@ if os.path.isdir(LEVEL_FILE):
 async def on_ready():
     print(f'Logged in as {bot.user}')
     print("Bot is online!")
-    await bot.load_extension("Cogs.Currency")
+
     
 @bot.command()
 async def test(ctx):
@@ -220,6 +224,7 @@ async def say(ctx, *, message: str):
     await ctx.send("Test")
 
 bot.run(os.environ["TOKEN"])
+
 
 
 
