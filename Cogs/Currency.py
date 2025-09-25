@@ -10,4 +10,4 @@ class Currency(commands.Cog):
         await ctx.send("Hello!")
 
 async def setup(bot):
-    await bot.add_cog(General(bot))
+    await bot.add_cog(Currency(bot))
