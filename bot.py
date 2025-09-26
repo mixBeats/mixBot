@@ -96,7 +96,7 @@ async def lb(ctx):
     leaderboard_message = ""
 
     for i, (user_id, data) in enumerate(top_users, start=1):
-        member = await ctx.guild.fetch_member(user_id)
+        member = bot.get_user(int(user_id)
         
         if Member is None:
             name = f"Unknown Member"
@@ -222,6 +222,7 @@ async def say(ctx, *, message: str):
     await ctx.send("Test")
 
 bot.run(os.environ["TOKEN"])
+
 
 
 
