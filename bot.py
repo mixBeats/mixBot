@@ -96,12 +96,14 @@ async def lb(ctx):
     leaderboard_message = ""
 
     for i, (user_id, data) in enumerate(top_users, start=1):
-        try:
-            member = await ctx.guild.fetch_member(user_id)
-            name = member.username
-            req_xp = user_data[user_id]["required_xp"]
-        except Exception:
+        member = await ctx.guild.fetch_member(user_id)
+        
+        if Member is None:
             name = f"Unknown Member"
+        else:
+            name = member.username
+        
+        req_xp = user_data[user_id]["required_xp"]
 
         leaderboard_message += f"{i}. `{name}` Level {data['level']} - {data['xp']} XP / {req_xp} XP \n"
 
@@ -220,6 +222,7 @@ async def say(ctx, *, message: str):
     await ctx.send("Test")
 
 bot.run(os.environ["TOKEN"])
+
 
 
 
