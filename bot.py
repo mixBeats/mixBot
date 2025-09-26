@@ -1,7 +1,5 @@
 import discord
 from discord.ext import commands
-from cogs.currency import Currency
-
 import os
 import json
 import shutil
@@ -22,7 +20,6 @@ if os.path.isdir(LEVEL_FILE):
 async def on_ready():
     print(f'Logged in as {bot.user}')
     print("Bot is online!")
-    await bot.load_extension("cogs.currency")
     
 @bot.command()
 async def test(ctx):
@@ -93,16 +90,18 @@ async def rank(ctx, member: discord.Member = None):
 @bot.command()
 async def lb(ctx):
     top_users = sorted(user_data.items(),
-                       key=lambda x: (x[1]["level"], x[1]["xp"]),
-                       reverse=True)[:10]
+        key=lambda x: (x[1]["level"], x[1]["xp"]),
+        reverse=True)[:10]
 
     leaderboard_message = ""
 
     for i, (user_id, data) in enumerate(top_users, start=1):
-
-        member = await ctx.guild.fetch_member(str(user_id))
-        name = member.display_name
-        req_xp = user_data[user_id]["required_xp"]
+        try:
+            member = await ctx.guild.fetch_member(user_id)
+            name = member.username
+            req_xp = user_data[user_id]["required_xp"]
+        except Exception:
+            name = f"Unknown Member"
 
         leaderboard_message += f"{i}. `{name}` Level {data['level']} - {data['xp']} XP / {req_xp} XP \n"
 
@@ -221,6 +220,7 @@ async def say(ctx, *, message: str):
     await ctx.send("Test")
 
 bot.run(os.environ["TOKEN"])
+
 
 
 
