@@ -3,11 +3,11 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 const prefix = "mb!";
 const fs = require('fs');
 
-let userData = {};
-
-if(fs.existsSync("/data/Levels.json")){
-    userData = JSON.parse(fs.readFileSync("/data/Levels.json", "utf8"));
+if(!fs.existsSync("/data/Levels.json")){
+  fs.writeFileSync("/data/Levels.json");
 }
+
+let userData = JSON.parse(fs.readFileSync("/data/Levels.json", "utf8"));
 
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
