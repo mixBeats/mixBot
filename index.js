@@ -3,8 +3,10 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 const prefix = "mb!";
 const fs = require('fs');
 
-if(!fs.existsSync("/data/Levels.json")){
-  fs.writeFileSync("/data/Levels.json", JSON.stringify({}, null, 2));
+let filePATH = "/data/Levels.json";
+
+if(!fs.existsSync(filePATH)){
+  fs.writeFileSync(filePATH, JSON.stringify({}, null, 2));
 }
 
 let userData = JSON.parse(fs.readFileSync("/data/Levels.json", "utf8"));
@@ -22,16 +24,16 @@ client.on('messageCreate', message => {
         userData[userId] = { xp: 0, level: 1};
     }
 
-    userData[userId] += 10;
+    userData[userId].xp += 10;
 
     const neededXp = userData[userId].level * 150;
-    if(userData[userId] >= neededXp){
+    if(userData[userId].xp >= neededXp){
         userData[userId].level++;
         userData[userId].xp = 0;
         message.channel.send(`${message.author.username} has leveled up to level **${userData[userId].level}**! 🎉🎉`);
     }
 
-    fs.writeFileSync("/data/Levels.json", JSON.stringify(userData, null, 2));
+    fs.writeFileSync(filePATH, JSON.stringify(userData, null, 2));
 
   // Commands
   
