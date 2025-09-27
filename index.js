@@ -73,7 +73,15 @@ client.on('messageCreate', async message => {
     let leaderboardMessage = "**mixBeats Leaderboard** \n";
     for(let i = 0; i < topUsers.length; i++){
       const [userId, data] = topUsers[i];
-      const member = await message.guild.members.fetch(userId);
+      let member = message.guild.members.cache.get(userId);
+
+      if (!member) {
+          try {
+              member = await message.guild.members.fetch(userId);
+          } catch (err) {
+              member = `Unknown Member ${userId}`;
+          }
+      }
       
       const username = member ? member.user.username : (data.username || `Unknown User (${userId})`);
       const neededXp = userData[userId].level * 150;
