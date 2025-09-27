@@ -44,7 +44,7 @@ client.on('messageCreate', message => {
 
     if(message.content === prefix + 'rank'){
 
-        const userId = message.auther.id;
+        const userId = message.author.id;
         const data = userData[userId];
         
         message.channel.send('${message.auther.username} Level **${data.level}** XP **${data.xp}**');
