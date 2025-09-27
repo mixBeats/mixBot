@@ -9,13 +9,6 @@ if(fs.existsSync("Levels.json")){
     userData = JSON.parse(fs.readFileSync("Levels.json", "utf8"));
 }
 
-if(!userData[userId]){
-    userData[userId] = {
-        xp: 0,
-        level: 1
-    };
-}
-
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
@@ -43,6 +36,12 @@ client.on('messageCreate', message => {
     if(message.content === prefix + 'rank'){
 
         const userId = message.author.id;
+        if(!userData[userId]){
+            userData[userId] = {
+            xp: 0,
+            level: 1
+            };
+        }
         const data = userData[userId];
         
         message.channel.send(`${message.author.username} Level **${data.level}** XP **${data.xp}**`);
