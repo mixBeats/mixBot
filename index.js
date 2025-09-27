@@ -31,7 +31,7 @@ client.on('messageCreate', message => {
     if(userData[userId] >= neededXp){
         userData[userId].level++;
         userData[userId].xp += 0;
-        message.channel.send("${message.auther.username} has leveled up to level **${ userData[userId].level}**! 🎉🎉");
+        message.channel.send(`${message.auther.username} has leveled up to level **${ userData[userId].level}**! 🎉🎉`);
     }
 
     fs.writeFileSync("Levels.json", JSON.stringify(userData, null, 2));
@@ -47,7 +47,7 @@ client.on('messageCreate', message => {
         const userId = message.author.id;
         const data = userData[userId];
         
-        message.channel.send('${message.auther.username} Level **${data.level}** XP **${data.xp}**');
+        message.channel.send(`${message.auther.username} Level **${data.level}** XP **${data.xp}**`);
     }
 });
 
