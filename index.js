@@ -32,7 +32,12 @@ client.on('messageCreate', message => {
 
   const userId = message.author.id;
 
-  if (!userData[userId]) userData[userId] = { xp: 0, level: 1 , username: message.author.username};
+  if (!userData[userId]) userData[userId] = 
+  { 
+    xp: 0, level: 1 , username: message.author.username
+  };
+
+  userData[userId].username = message.author.username;
 
   userData[userId].xp += 10;
 
