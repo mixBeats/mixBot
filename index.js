@@ -52,6 +52,28 @@ client.on('messageCreate', message => {
     const data = userData[userId];
     message.channel.send(`${message.author.username} Level **${data.level}** XP **${data.xp}**`);
   }
+
+  if(message.content === prefix + "lb"){
+    const leaderBoardArray = Object.entries(userData);
+
+    leaderBoardArray.sort((a, b) => {
+      if(b[1].level === a[1].level){
+        return b[1].xp - a[1].xp;
+      }
+      return b[1].level - a[1].level;
+    });
+
+    const topUsers = leaderBoardArray.slice(0, 10);
+
+    let leaderboardMessage = "**mixBeats Leaderboard** \n";
+    for(int i = 0; i < topUsers.length, i++){
+      const [userId, data] = topUsers[i];
+      const member = message.guild.member.cache.get(userId);
+      const username = member ? member.user.username : `Unknown User`;
+      leaderboardMessage += `${i}. ${username} - Level **${data.level}** XP **${data.xp}**\n`;
+    }
+    message,channel.send(leaderboardMessage);
+  }
 });
 
 client.login(process.env.TOKEN);
