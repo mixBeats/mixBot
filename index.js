@@ -68,7 +68,7 @@ client.on('messageCreate', message => {
     let leaderboardMessage = "**mixBeats Leaderboard** \n";
     for(let i = 0; i < topUsers.length; i++){
       const [userId, data] = topUsers[i];
-      const member = message.guild.member.cache.get(userId);
+      const member = message.guild.members.cache.get(userId);
       const username = member ? member.user.username : `Unknown User`;
       leaderboardMessage += `${i}. ${username} - Level **${data.level}** XP **${data.xp}**\n`;
     }
