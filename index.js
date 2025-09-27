@@ -4,7 +4,7 @@ const prefix = "mb!";
 const fs = require('fs');
 
 if(!fs.existsSync("/data/Levels.json")){
-  fs.writeFileSync("/data/Levels.json");
+  fs.writeFileSync("/data/Levels.json", JSON.stringify({}, null, 2));
 }
 
 let userData = JSON.parse(fs.readFileSync("/data/Levels.json", "utf8"));
@@ -18,28 +18,29 @@ client.on('messageCreate', message => {
 
     const userId = message.author.id;
 
+    if(!userData[userId]){
+        userData[userId] = { xp: 0, level: 1};
+    }
+
     userData[userId] += 10;
 
     const neededXp = userData[userId].level * 150;
-    fs.writeFileSync("/data/Levels.json", JSON.stringify(userData, null, 2));
     if(userData[userId] >= neededXp){
         userData[userId].level++;
-        userData[userId].xp += 0;
+        userData[userId].xp = 0;
         message.channel.send(`${message.author.username} has leveled up to level **${userData[userId].level}**! 🎉🎉`);
     }
+
+    fs.writeFileSync("/data/Levels.json", JSON.stringify(userData, null, 2));
+
+  // Commands
+  
     if (message.content === prefix + 'hello') {
         message.channel.send('Hello!');
     }
 
     if(message.content === prefix + 'rank'){
 
-        const userId = message.author.id;
-        if(!userData[userId]){
-            userData[userId] = {
-            xp: 0,
-            level: 1
-            };
-        }
         const data = userData[userId];
         
         message.channel.send(`${message.author.username} Level **${data.level}** XP **${data.xp}**`);
