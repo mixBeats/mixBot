@@ -64,13 +64,13 @@ client.on('messageCreate', message => {
     });
 
     const topUsers = leaderBoardArray.slice(0, 10);
-    const neededXp = userData[userId].level * 150;
 
     let leaderboardMessage = "**mixBeats Leaderboard** \n";
     for(let i = 0; i < topUsers.length; i++){
       const [userId, data] = topUsers[i];
       const member = message.guild.members.cache.get(userId);
       const username = member ? member.user.username : `Unknown User`;
+      const neededXp = userData[userId].level * 150;
       leaderboardMessage += `${i}. ${username} - Level **${data.level}** XP **${data.xp} / ${neededXp}**\n`;
     }
     message.channel.send(leaderboardMessage);
