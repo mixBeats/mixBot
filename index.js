@@ -27,7 +27,7 @@ client.once('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.on('messageCreate', message => {
+client.on('messageCreate', async message => {
   if (!message.author || message.author.bot) return;
 
   const userId = message.author.id;
@@ -73,7 +73,7 @@ client.on('messageCreate', message => {
     let leaderboardMessage = "**mixBeats Leaderboard** \n";
     for(let i = 0; i < topUsers.length; i++){
       const [userId, data] = topUsers[i];
-      const member = message.guild.members.cache.get(userId);
+      const member = await message.guild.members.fetch(userId);
       
       const username = member ? member.user.username : (data.username || `Unknown User (${userId})`);
       const neededXp = userData[userId].level * 150;
