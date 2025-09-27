@@ -66,7 +66,7 @@ client.on('messageCreate', message => {
     const topUsers = leaderBoardArray.slice(0, 10);
 
     let leaderboardMessage = "**mixBeats Leaderboard** \n";
-    for(int i = 0; i < topUsers.length, i++){
+    for(let i = 0; i < topUsers.length, i++){
       const [userId, data] = topUsers[i];
       const member = message.guild.member.cache.get(userId);
       const username = member ? member.user.username : `Unknown User`;
