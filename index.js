@@ -69,6 +69,15 @@ client.on('messageCreate', message => {
     for(let i = 0; i < topUsers.length; i++){
       const [userId, data] = topUsers[i];
       const member = message.guild.members.cache.get(userId);
+      
+        if (!member) {
+            try {
+                member = await message.guild.members.fetch(userId);
+            } catch (err) {
+                console.log(`Could not fetch user ${userId}`);
+            }
+        }
+      
       const username = member ? member.user.username : `Unknown User`;
       const neededXp = userData[userId].level * 150;
       leaderboardMessage += `${i}. ${username} - Level **${data.level}** XP **${data.xp} / ${neededXp}**\n`;
