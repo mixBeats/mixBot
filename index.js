@@ -72,7 +72,7 @@ client.on('messageCreate', message => {
       const username = member ? member.user.username : `Unknown User`;
       leaderboardMessage += `${i}. ${username} - Level **${data.level}** XP **${data.xp}**\n`;
     }
-    message,channel.send(leaderboardMessage);
+    message.channel.send(leaderboardMessage);
   }
 });
 
