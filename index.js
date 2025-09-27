@@ -1,14 +1,58 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+const prefix = "mb!";
+const fs = require('fs');
+
+let userData = {};
+
+if(fs.existsSync("Levels.json")){
+    userData = JSON.parse(fs.readFileSync("Levels.json", "utf8"));
+}
 
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
 client.on('messageCreate', message => {
-    if (message.content === 'mb!hello') {
+    if(message.author.bot) return;
+
+    const userId = message.author.id;
+
+    if(!userData[userId]){
+        userData[userId] = {
+            xp: 0,
+            level: 1
+        };
+    }
+
+    userData[userId] += 10;
+
+    const neededXp = userData[userId].level * 150;
+    if(userData[userId] >= neededXp){
+        userData[userId].level++;
+        userData[userId].xp += 0;
+        message.channel.send("${message.auther.username} has leveled up to level **${ userData[userId].level}**! 🎉🎉");
+    }
+
+    fs.writeFileSync("Levels.json", JSON.stringify(userData, null, 2));
+});
+
+client.on('messageCreate', message => {
+
+    if(message.auther.bot) return;
+
+    if (message.content === prefix + 'hello') {
         message.channel.send('Hello!');
     }
+
+    if(message.content === prefix + 'rank'){
+
+        const userId = message.auther.id;
+        const data = userData[userId];
+        
+        message.channel.send('${message.auther.username} Level **${data.level}** XP **${data.xp}**');
+    }
+    
 });
 
 client.login(process.env.TOKEN);
