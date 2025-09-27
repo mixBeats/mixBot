@@ -5,8 +5,8 @@ const fs = require('fs');
 
 let userData = {};
 
-if(fs.existsSync("/data/Levels.json")){
-    userData = JSON.parse(fs.readFileSync("/data/Levels.json", "utf8"));
+if(fs.existsSync("/app/data/Levels.json")){
+    userData = JSON.parse(fs.readFileSync("/app/data/Levels.json", "utf8"));
 }
 
 client.once('ready', () => {
@@ -27,7 +27,7 @@ client.on('messageCreate', message => {
         message.channel.send(`${message.author.username} has leveled up to level **${userData[userId].level}**! 🎉🎉`);
     }
 
-    fs.writeFileSync("/data/Levels.json", JSON.stringify(userData, null, 2));
+    fs.writeFileSync("/app/data/Levels.json", JSON.stringify(userData, null, 2));
 
     if (message.content === prefix + 'hello') {
         message.channel.send('Hello!');
