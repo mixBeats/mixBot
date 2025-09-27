@@ -27,7 +27,7 @@ client.once('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.on('messageCreate', message => {
+client.on('messageCreate', async message => {
   if (!message.author || message.author.bot) return;
 
   const userId = message.author.id;
@@ -73,17 +73,15 @@ client.on('messageCreate', message => {
     let leaderboardMessage = "**mixBeats Leaderboard** \n";
     for(let i = 0; i < topUsers.length; i++){
       const [userId, data] = topUsers[i];
-      let member = message.guild.members.fetch(userId)
-      .then(member => {
-          const username = member.user.username;
-            leaderboardMessage += `${i}. ${username} - Level **${data.level}** XP **${data.xp} / ${data.level * 150}**\n`;
-      })
-      .catch(() => {
-          const username = data.username || `Unknown User (${userId})`;
-            leaderboardMessage += `${i}. Unknown User ${userId} - Level **${data.level}** XP **${data.xp} / ${data.level * 150}**\n`;
-      });
-      
+      let username;
+      try {
+                const member = await message.guild.members.fetch(userId);
+                username = member.user.username;
+            } catch {
+                username = data.username || `Unknown User (${userId})`;
+            }      
       const neededXp = userData[userId].level * 150;
+      leaderboardMessage += `${i}. ${username} - Level **${data.level}** XP **${data.xp} / ${data.level * 150}**\n`;
     }
     message.channel.send(leaderboardMessage);
   }
