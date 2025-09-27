@@ -1,15 +1,23 @@
 const { Client, GatewayIntentBits } = require('discord.js');
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
-const prefix = "mb!";
 const fs = require('fs');
 
-let filePATH = "/data/Levels.json";
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent
+    ]
+});
 
-if(!fs.existsSync(filePATH)){
-  fs.writeFileSync(filePATH, JSON.stringify({}, null, 2));
+const prefix = "mb!";
+const filePATH = "/data/Levels.json";
+
+// Ensure JSON file exists
+if (!fs.existsSync(filePATH)) {
+    fs.writeFileSync(filePATH, JSON.stringify({}, null, 2));
 }
 
-let userData = JSON.parse(fs.readFileSync("/data/Levels.json", "utf8"));
+let userData = JSON.parse(fs.readFileSync(filePATH, "utf8"));
 
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -20,14 +28,14 @@ client.on('messageCreate', message => {
 
     const userId = message.author.id;
 
-    if(!userData[userId]){
-        userData[userId] = { xp: 0, level: 1};
+    if (!userData[userId]) {
+        userData[userId] = { xp: 0, level: 1 };
     }
 
     userData[userId].xp += 10;
 
     const neededXp = userData[userId].level * 150;
-    if(userData[userId].xp >= neededXp){
+    if (userData[userId].xp >= neededXp) {
         userData[userId].level++;
         userData[userId].xp = 0;
         message.channel.send(`${message.author.username} has leveled up to level **${userData[userId].level}**! 🎉🎉`);
@@ -35,16 +43,13 @@ client.on('messageCreate', message => {
 
     fs.writeFileSync(filePATH, JSON.stringify(userData, null, 2));
 
-  // Commands
-  
+    // Commands
     if (message.content === prefix + 'hello') {
         message.channel.send('Hello!');
     }
 
-    if(message.content === prefix + 'rank'){
-
+    if (message.content === prefix + 'rank') {
         const data = userData[userId];
-        
         message.channel.send(`${message.author.username} Level **${data.level}** XP **${data.xp}**`);
     }
 });
