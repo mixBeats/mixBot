@@ -76,13 +76,14 @@ client.on('messageCreate', message => {
       let member = message.guild.members.fetch(userId)
       .then(member => {
           const username = member.user.username;
+            leaderboardMessage += `${i}. ${username} - Level **${data.level}** XP **${data.xp} / ${data.level * 150}**\n`;
       })
       .catch(() => {
           const username = data.username || `Unknown User (${userId})`;
+            leaderboardMessage += `${i}. Unknown User ${userId} - Level **${data.level}** XP **${data.xp} / ${data.level * 150}**\n`;
       });
       
       const neededXp = userData[userId].level * 150;
-      leaderboardMessage += `${i}. ${username} - Level **${data.level}** XP **${data.xp} / ${neededXp}**\n`;
     }
     message.channel.send(leaderboardMessage);
   }
