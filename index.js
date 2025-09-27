@@ -14,7 +14,7 @@ client.once('ready', () => {
 });
 
 client.on('messageCreate', message => {
-    if(message.author.bot) return;
+    if (!message.author || message.author.bot) return;
 
     const userId = message.author.id;
 
@@ -35,11 +35,8 @@ client.on('messageCreate', message => {
     }
 
     fs.writeFileSync("Levels.json", JSON.stringify(userData, null, 2));
-});
 
-client.on('messageCreate', message => {
-
-    if(message.auther.bot) return;
+    
 
     if (message.content === prefix + 'hello') {
         message.channel.send('Hello!');
@@ -52,7 +49,6 @@ client.on('messageCreate', message => {
         
         message.channel.send('${message.auther.username} Level **${data.level}** XP **${data.xp}**');
     }
-    
 });
 
 client.login(process.env.TOKEN);
