@@ -46,6 +46,10 @@ client.on('messageCreate', message => {
 
         const userId = message.author.id;
         const data = userData[userId];
+
+         if (!userData[userId]) {
+            userData[userId] = { xp: 0, level: 1 };
+          }
         
         message.channel.send(`${message.author.username} Level **${data.level}** XP **${data.xp}**`);
     }
