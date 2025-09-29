@@ -15,14 +15,14 @@ function saveData(data){
 
 // Balance Command
 const balanceCommand = {
-  name: "balance",
+  name: "bal",
   description: "Check your balance",
   async execute(message, args, client){
     const data = loadData();
 
       const userId = message.author.id;
-      if(!data[userId]){
-          data[userId] = { coins: 0, xp: 0, level: 1 }; 
+      if(!data.coins){
+          data[userId] = { coins: 0}; 
         }
       const user = data[userId];
     
@@ -49,7 +49,7 @@ const AddCoinsCommand = {
 
       const userId = selected_user.id;
       if (!data[userId]) {
-        data[userId] = { coins: 0, xp: 0, level: 1 }; 
+        data[userId] = { coins: 0 }; 
         }
 
       data[userId].coins += amount;
