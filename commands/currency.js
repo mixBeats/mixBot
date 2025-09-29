@@ -19,6 +19,12 @@ const balanceCommand = {
   description: "Check your balance",
   async execute(message, args, client){
     const data = loadData();
+
+      const userId = message.author.id;
+      if(!data[userId]){
+          data[userId] = { coins: 0, xp: 0, level: 1 }; 
+        }
+      const user = data[userId];
     
     message.channel.send(`${message.author.username} Coins: **${data.coins}**`);
   }
@@ -30,7 +36,7 @@ const AddCoinsCommand = {
   description: "Add coins to user",
     async execute(message, args, client){
       if(!message.member.permissions.has("Administrator")){
-        return message.reply("❌ You do not have premission to run this command");
+        return message.reply("❌ You do not have permission to run this command");
       }
 
       const data = loadData();
