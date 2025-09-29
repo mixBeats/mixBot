@@ -36,10 +36,9 @@ client.once('ready', () => {
 });
 
 client.on('messageCreate', async message => {
+  if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-  if (!message.content.startsWith(client.prefix) || message.author.bot) return;
-
-  const args = message.content.slice(client.prefix.length).trim().split(/ +/);
+  const args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
 
   const command = client.commands.get(commandName);
