@@ -41,11 +41,13 @@ const AddCoinsCommand = {
 
       const data = loadData();
       const selected_user = message.mentions.users.first();
-      const amount = parseInt(args[1]);
+      const amount = args.find(arg => !isNaN(arg));
 
-      if(!selected_user || isNaN(amount)){
+      if(!selected_user || amount === undefined){
         return message.reply("Command Use: mb!add-coins @member Amount");
       }
+
+      parseInt(amount);
 
       const userId = selected_user.id;
       if (!data[userId]) {
