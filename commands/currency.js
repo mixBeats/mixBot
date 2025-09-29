@@ -51,11 +51,13 @@ const AddCoinsCommand = {
       }
 
       const userId = selected_user.id;
-      if (!data[userId]) {
-        data[userId] = { coins: 0 }; 
-        }
 
-      data[userId].coins += amount;
+            if(!data[userId]) {
+              data[userId] = { coins: 0, xp: 0, level: 1 };
+            } else if(data[userId].coins === undefined) {
+              data[userId].coins += amount;
+            }
+
       saveData(data);
 
       message.channel.send(`Added **${amount}** coins to <@${userId}>`);
