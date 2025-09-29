@@ -36,6 +36,22 @@ client.once('ready', () => {
 });
 
 client.on('messageCreate', async message => {
+
+  if (!message.content.startsWith(client.prefix) || message.author.bot) return;
+
+  const args = message.content.slice(client.prefix.length).trim().split(/ +/);
+  const commandName = args.shift().toLowerCase();
+
+  const command = client.commands.get(commandName);
+  
+  if (command) {
+    try {
+      await command.execute(message, args, client);
+    } catch (err) {
+      message.reply("Cannot run this command");
+    }
+  }
+  
   if (!message.author || message.author.bot) return;
 
   const userId = message.author.id;
