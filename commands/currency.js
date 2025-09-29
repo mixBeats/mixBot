@@ -19,12 +19,13 @@ const balanceCommand = {
   description: "Check your balance",
   async execute(message, args, client){
     const data = loadData();
-      const userId = message.author.id;
+    const userId = message.author.id;
+    const user = data[userId];
       
-      if(!data[userId]) {
+      if(!user.coins) {
           data[userId] = { coins: 0 }; 
       }
-      const user = data[userId];
+
     
     message.channel.send(`${message.author.username} Coins: **${user.coins}**`);
   }
@@ -55,7 +56,7 @@ const AddCoinsCommand = {
       data[userId].coins += amount;
       saveData(data);
 
-      message.channel.send(`Added **${coinAmount}** coins to <@${userId}>`);
+      message.channel.send(`Added **${amount}** coins to <@${userId}>`);
     }
 };
 
