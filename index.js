@@ -61,7 +61,7 @@ client.on('messageCreate', async message => {
 
   if (!userData[userId]) userData[userId] = 
   { 
-    xp: 0, level: 1 , username: message.author.username
+    coins: 0, xp: 0, level: 1 , username: message.author.username
   };
 
   userData[userId].username = message.author.username;
