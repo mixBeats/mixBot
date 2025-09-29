@@ -1,5 +1,5 @@
 const fs = require("fs");
-const DATA_FILE = "/data/levels.json";
+const DATA_FILE = "./data/levels.json";
 
 if(!fs.existsSync(DATA_FILE)) {
     fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
@@ -45,11 +45,12 @@ const AddCoinsCommand = {
       const data = loadData();
       const selected_user = message.mentions.users.first();
       const amount = parseInt(args[1]);
-      const userId = selected_user.id;
 
       if(!selected_user || isNaN(amount)){
         return message.reply("Command Use: mb!add-coins @member Amount");
       }
+
+        const userId = selected_user.id;
 
         if(!data[userId]) {
             data[userId] = { coins: 0, xp: 0, level: 1 };
