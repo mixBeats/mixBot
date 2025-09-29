@@ -19,14 +19,14 @@ const balanceCommand = {
   description: "Check your balance",
   async execute(message, args, client){
     const data = loadData();
-
       const userId = message.author.id;
+      
       if(!data[userId]) {
           data[userId] = { coins: 0 }; 
       }
       const user = data[userId];
     
-    message.channel.send(`${message.author.username} Coins: **${data.coins}**`);
+    message.channel.send(`${message.author.username} Coins: **${user.coins}**`);
   }
 };
 
@@ -41,13 +41,11 @@ const AddCoinsCommand = {
 
       const data = loadData();
       const selected_user = message.mentions.users.first();
-      const amount = args.find(arg => !isNaN(arg));
+      const amount = parseInt(args[1]);
 
-      if(!selected_user || amount === undefined){
+      if(!selected_user || isNaN(amount)){
         return message.reply("Command Use: mb!add-coins @member Amount");
       }
-
-      const coinAmount = parseInt(amount);
 
       const userId = selected_user.id;
       if (!data[userId]) {
@@ -57,7 +55,7 @@ const AddCoinsCommand = {
       data[userId].coins += amount;
       saveData(data);
 
-      message.channel.send(`Added **${coinAmount}** to <@${userId}>`);
+      message.channel.send(`Added **${coinAmount}** coins to <@${userId}>`);
     }
 };
 
