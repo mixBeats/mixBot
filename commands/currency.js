@@ -20,12 +20,12 @@ const balanceCommand = {
   async execute(message, args, client){
     const data = loadData();
     const userId = message.author.id;
-    const user = data[userId];
       
-      if(!user.coins) {
-          data[userId] = { coins: 0 }; 
-      }
+    if(!data[userId].coins === undefined) {
+      data[userId].coins = 0;
+    }
 
+    const user = data[userId];
     
     message.channel.send(`${message.author.username} Coins: **${user.coins}**`);
   }
