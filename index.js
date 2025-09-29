@@ -8,10 +8,10 @@ const client = new Client({
   ]
 });
 
-const prefix = "mb!";
-const DATA_FILE = "/data/levels.json";
-
 client.commands = new Collection();
+const prefix = "mb!";
+
+const DATA_FILE = "/data/levels.json";
 
 const commandFiles = fs.readdirSync("./commands").fliter(file => file.endsWith(".js"));
 for(const file of commandFiles){
