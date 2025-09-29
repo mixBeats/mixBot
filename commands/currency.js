@@ -1,8 +1,56 @@
-module.exports = {
-  name: "bal",
+const fs = require("fs");
+const DATA_FILE = "./userdata.json";
+
+if(!fs.existsSync(DATA_FILE)) {
+    fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
+}
+
+function loadData(){
+  return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
+}
+
+function saveData(data){
+  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+}
+
+// Balance Command
+const balanceCommand = {
+  name: "balance",
   description: "Check your balance",
-  async execute(message, args){
-    const number = 15;
-    message.channel.send(`Your balance is ${number}`);
-  }, 
+  async execute(message, args, client){
+    const data = loadData();
+    
+    message.channel.send(`${message.author.username} Coins: **${data.coins}**`);
+  }
 };
+
+// Add Coins Command
+const AddCoinsCommand = {
+  name: "add-coins",
+  description: "Add coins to user",
+    async execute(message, args, client){
+      if(!message.member.permissions.has("Administrator")){
+        return message.reply("❌ You do not have premission to run this command");
+      }
+
+      const data = loadData();
+      const selected_user = message.mentions.users.first();
+      const amount = parseInt(args[1]);
+
+      if(!selected_user || isNaN(amount)){
+        return message.reply("Command Use: mb!add-coins @member Amount");
+      }
+
+      const userId = selected_user.id;
+      if (!data[userId]) {
+        data[userId] = { coins: 0, xp: 0, level: 1 }; 
+        }
+
+      data[userId].coins += amount;
+      saveData(data);
+
+      message.channel.send(`Added **${amount}** to <@${userId}>`);
+    }
+};
+
+module.exports = [balanceCommand, AddCoinsCommand];
