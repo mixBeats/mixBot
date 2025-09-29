@@ -21,7 +21,9 @@ const balanceCommand = {
     const data = loadData();
     const userId = message.author.id;
       
-    if(!data[userId].coins === undefined) {
+    if(!data[userId]) {
+      data[userId] = { coins: 0, xp: 0, level: 1 };
+    } else if(data[userId].coins === undefined) {
       data[userId].coins = 0;
     }
 
