@@ -21,9 +21,9 @@ const balanceCommand = {
     const data = loadData();
 
       const userId = message.author.id;
-      if(!data.coins){
-          data[userId] = { coins: 0}; 
-        }
+      if(!data[userId]) {
+          data[userId] = { coins: 0 }; 
+      }
       const user = data[userId];
     
     message.channel.send(`${message.author.username} Coins: **${data.coins}**`);
@@ -47,7 +47,7 @@ const AddCoinsCommand = {
         return message.reply("Command Use: mb!add-coins @member Amount");
       }
 
-      parseInt(amount);
+      const coinAmount = parseInt(amount);
 
       const userId = selected_user.id;
       if (!data[userId]) {
@@ -57,7 +57,7 @@ const AddCoinsCommand = {
       data[userId].coins += amount;
       saveData(data);
 
-      message.channel.send(`Added **${amount}** to <@${userId}>`);
+      message.channel.send(`Added **${coinAmount}** to <@${userId}>`);
     }
 };
 
