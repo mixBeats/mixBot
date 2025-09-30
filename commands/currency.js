@@ -43,7 +43,7 @@ const addCoinsCommand = {
     await storage.setItem(userId, coins);
 
     await message.channel.send(
-      `Added **${amount}** coins to <@${userId}>**`
+      `Added **${amount}** coins to <@${userId}>`
     );
   },
 };
