@@ -4,10 +4,6 @@ const path = require("path");
 const PERSISTENT_MOUNT_PATH = "/data"; 
 const DATA_FILE = path.join(PERSISTENT_MOUNT_PATH, "levels.json");
 
-if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-}
-
 if (!fs.existsSync(DATA_FILE)) {
     fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
 }
