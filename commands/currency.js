@@ -2,10 +2,11 @@ const fs = require("fs");
 const path = require("path");
 
 const PERSISTENT_MOUNT_PATH = "/data"; 
-const DATA_FILE = path.join(PERSISTENT_MOUNT_PATH, "levels.json");
+const DATA_DIR = PERSISTENT_MOUNT_PATH;
+const DATA_FILE = path.join(DATA_DIR, "levels.json");
 
-if (!fs.existsSync(PERSISTENT_MOUNT_PATH)) {
-    fs.mkdirSync(PERSISTENT_MOUNT_PATH, { recursive: true });
+if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
 if (!fs.existsSync(DATA_FILE)) {
@@ -15,8 +16,7 @@ if (!fs.existsSync(DATA_FILE)) {
 function loadData() {
     try {
         const raw = fs.readFileSync(DATA_FILE, "utf8");
-        const data = JSON.parse(raw);
-        return data;
+        return JSON.parse(raw);
     } catch (err) {
         console.error(`[LOAD ERROR] Failed to load data from ${DATA_FILE}`);
         return {}; 
@@ -49,7 +49,7 @@ const balanceCommand = {
         const userData = getUserData(data, userId);
         const coins = userData.coins;
 
-        await message.channel.send(`**${message.author.username}** coins: **${coins}**`);
+        await message.channel.send(`${message.author.username} coins: **${coins}**`);
     }
 };
 
@@ -64,25 +64,22 @@ const addCoinsCommand = {
 
         const selectedUser = message.mentions.users.first();
         
-        const mentionId = selectedUser ? `<@${selectedUser.id}>` : null;
-        const amountArg = args.find(arg => arg !== mentionId && arg !== `<@!${selectedUser?.id}>`);
-        
-        const amount = parseInt(amountArg, 10);
+        const amount = parseInt(args[1], 10);
 
-        if (!selectedUser || isNaN(amount)) {
-            return message.reply("📝 Use: `mb!add-coins @member amount`");
+        if (!selectedUser || isNaN(amount) || amount <= 0) {
+            return message.reply("Use: `!add-coins @member amount`");
         }
 
         const data = loadData();
         const userId = selectedUser.id;
 
-        const userData = getUserData(data, userId); 
+        const userData = getUserData(data, userId); 
 
         userData.coins += amount;
-        
+         
         saveData(data);
 
-        await message.channel.send(`Added **${amount}** coins to <@${userId}>`);
+        await message.channel.send(`✅ Added **${amount}** coins to <@${userId}>`);
     }
 };
 
