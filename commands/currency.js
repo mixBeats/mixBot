@@ -13,6 +13,7 @@ function loadData() {
 
 function saveData(data) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+  console.log("Saved data is:", data)
 }
 
 // Balance Command
@@ -68,7 +69,7 @@ const AddCoinsCommand = {
 
     saveData(data);
 
-    message.channel.send(`✅ Added **${amount}** coins to <@${userId}>`);
+    message.channel.send(`Added **${amount}** coins to <@${userId}>`);
   }
 };
 
