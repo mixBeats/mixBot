@@ -8,7 +8,7 @@ if(!fs.existsSync(DATA_FILE)) {
 }
 
 function loadData(){
-    JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
+    return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
 }
 
 function saveData(data){
@@ -57,8 +57,10 @@ const AddCoinsCommand = {
 
         if (!data[userId]) {
           data[userId] = { coins: 0, xp: 0, level: 1 };
+          saveData(data);
         } else if (data[userId].coins === undefined) {
           data[userId].coins = 0;
+          saveData(data);
         }
 
         data[userId].coins += amount;
