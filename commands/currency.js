@@ -1,74 +1,52 @@
-const fs = require("fs");
-const path = require("path");
+const storage = require('node-persist');
 
-// Path to JSON file (use /data for Northflank volume)
-const DATA_FILE = path.join("/data", "levels.json");
+// Initialize storage (use Northflank volume if available)
+const DATA_DIR = process.env.DATA_DIR || './data';
+storage.init({ dir: DATA_DIR, forgiveParseErrors: true });
 
-// --- Helpers ---
-function loadData() {
-  try {
-    if (!fs.existsSync(DATA_FILE)) {
-      fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
-    }
-    return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
-  } catch {
-    return {};
-  }
-}
-
-function saveData(data) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-}
-
-// --- Balance Command ---
+// ---------------- Balance Command ----------------
 const balanceCommand = {
-  name: "bal",
-  description: "Check your balance",
+  name: 'bal',
+  description: 'Check your balance',
   async execute(message) {
-    const data = loadData();
     const userId = message.author.id;
 
-    if (!data[userId]) {
-      data[userId] = { coins: 0, xp: 0, level: 1 };
-      saveData(data);
-    }
+    let coins = await storage.getItem(userId);
+    if (coins === undefined || isNaN(coins)) coins = 0;
 
-    await message.channel.send(
-      `${message.author.username} Coins: **${data[userId].coins}**`
-    );
-  }
+    await message.channel.send(`${message.author.username} Coins: **${coins}**`);
+  },
 };
 
-// --- Add Coins Command ---
+// ---------------- Add Coins Command ----------------
 const addCoinsCommand = {
-  name: "add-coins",
-  description: "Add coins to user",
+  name: 'add-coins',
+  description: 'Add coins to user',
   async execute(message, args) {
-    if (!message.member.permissions.has("Administrator")) {
-      return message.reply("❌ You do not have permission.");
+    if (!message.member.permissions.has('Administrator')) {
+      return message.reply('❌ You do not have permission.');
     }
 
-    const target = message.mentions.users.first();
+    const targetUser = message.mentions.users.first();
     const amount = parseInt(args[1], 10);
 
-    if (!target || isNaN(amount)) {
-      return message.reply("Usage: `!add-coins @member amount`");
+    if (!targetUser || isNaN(amount) || amount <= 0) {
+      return message.reply('Usage: `!add-coins @user amount`');
     }
 
-    const data = loadData();
-    const userId = target.id;
+    const userId = targetUser.id;
 
-    if (!data[userId]) {
-      data[userId] = { coins: 0, xp: 0, level: 1 };
-    }
+    let coins = await storage.getItem(userId);
+    if (coins === undefined || isNaN(coins)) coins = 0;
 
-    data[userId].coins += amount;
-    saveData(data);
+    coins += amount;
+
+    await storage.setItem(userId, coins);
 
     await message.channel.send(
-      `Added **${amount}** coins to <@${userId}>. New Balance: **${data[userId].coins}**`
+      `Added **${amount}** coins to <@${userId}>. New balance: **${coins}**`
     );
-  }
+  },
 };
 
 module.exports = [balanceCommand, addCoinsCommand];
