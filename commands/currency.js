@@ -8,19 +8,20 @@ if (!fs.existsSync(DATA_FILE)) {
 }
 
 function loadData() {
-  return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
+    const raw = fs.readFileSync(DATA_FILE, "utf8");
+    return JSON.parse(raw);
 }
 
 function saveData(data) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-  console.log("Saved data is:", data)
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+    console.log("Saved data:", data);
 }
 
 // Balance Command
 const balanceCommand = {
   name: "bal",
   description: "Check your balance",
-  async execute(message, args, client) {
+  async execute(message) {
     const data = loadData();
     const userId = message.author.id;
 
@@ -29,48 +30,40 @@ const balanceCommand = {
       saveData(data);
     }
 
-    if (data[userId].coins === undefined) {
-      data[userId].coins = 0;
-      saveData(data);
-    }
-
-    const coins = data[userId].coins;
-    message.channel.send(`${message.author.username} Coins: **${coins}**`);
+    const coins = data[userId].coins ?? 0;
+    await message.channel.send(`${message.author.username} Coins: **${coins}**`);
   }
 };
 
 // Add Coins Command
-const AddCoinsCommand = {
+const addCoinsCommand = {
   name: "add-coins",
   description: "Add coins to user",
-  async execute(message, args, client) {
+  async execute(message, args) {
     if (!message.member.permissions.has("Administrator")) {
       return message.reply("❌ You do not have permission to run this command");
     }
 
     const data = loadData();
-    const selected_user = message.mentions.users.first();
-    const amount = parseInt(args[1]);
+    const selectedUser = message.mentions.users.first();
+    const amount = parseInt(args[1], 10);
 
-    if (!selected_user || isNaN(amount)) {
+    if (!selectedUser || isNaN(amount)) {
       return message.reply("Command Use: mb!add-coins @member Amount");
     }
 
-    const userId = selected_user.id;
+    const userId = selectedUser.id;
 
     if (!data[userId]) {
       data[userId] = { coins: 0, xp: 0, level: 1 };
     }
-    if (data[userId].coins === undefined) {
-      data[userId].coins = 0;
-    }
 
-    data[userId].coins += amount;
+    data[userId].coins = (data[userId].coins ?? 0) + amount;
 
     saveData(data);
 
-    message.channel.send(`Added **${amount}** coins to <@${userId}>`);
+    await message.channel.send(`Added **${amount}** coins to <@${userId}>`);
   }
 };
 
-module.exports = [balanceCommand, AddCoinsCommand];
+module.exports = [balanceCommand, addCoinsCommand];
