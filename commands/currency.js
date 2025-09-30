@@ -3,15 +3,15 @@ const path = require("path");
 
 const DATA_FILE = path.join("/data", "levels.json");
 
-if(!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
+if (!fs.existsSync(DATA_FILE)) {
+  fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
 }
 
-function loadData(){
-    return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
+function loadData() {
+  return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
 }
 
-function saveData(data){
+function saveData(data) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
@@ -19,19 +19,21 @@ function saveData(data){
 const balanceCommand = {
   name: "bal",
   description: "Check your balance",
-  async execute(message, args, client){
+  async execute(message, args, client) {
     const data = loadData();
     const userId = message.author.id;
-      
-    if(!data[userId]) {
+
+    if (!data[userId]) {
       data[userId] = { coins: 0, xp: 0, level: 1 };
+      saveData(data);
     }
-      if(data[userId].coins === undefined) {
+
+    if (data[userId].coins === undefined) {
       data[userId].coins = 0;
+      saveData(data);
     }
 
     const coins = data[userId].coins;
-    
     message.channel.send(`${message.author.username} Coins: **${coins}**`);
   }
 };
@@ -40,35 +42,34 @@ const balanceCommand = {
 const AddCoinsCommand = {
   name: "add-coins",
   description: "Add coins to user",
-    async execute(message, args, client){
-      if(!message.member.permissions.has("Administrator")){
-        return message.reply("❌ You do not have permission to run this command");
-      }
-
-      const data = loadData();
-      const selected_user = message.mentions.users.first();
-      const amount = parseInt(args[1]);
-
-      if(!selected_user || isNaN(amount)){
-        return message.reply("Command Use: mb!add-coins @member Amount");
-      }
-
-        const userId = selected_user.id;
-
-        if (!data[userId]) {
-          data[userId] = { coins: 0, xp: 0, level: 1 };
-          saveData(data);
-        } else if (data[userId].coins === undefined) {
-          data[userId].coins = 0;
-          saveData(data);
-        }
-
-        data[userId].coins += amount;
-
-        saveData(data);
-
-      message.channel.send(`Added **${amount}** coins to <@${userId}>`);
+  async execute(message, args, client) {
+    if (!message.member.permissions.has("Administrator")) {
+      return message.reply("❌ You do not have permission to run this command");
     }
+
+    const data = loadData();
+    const selected_user = message.mentions.users.first();
+    const amount = parseInt(args[1]);
+
+    if (!selected_user || isNaN(amount)) {
+      return message.reply("Command Use: mb!add-coins @member Amount");
+    }
+
+    const userId = selected_user.id;
+
+    if (!data[userId]) {
+      data[userId] = { coins: 0, xp: 0, level: 1 };
+    }
+    if (data[userId].coins === undefined) {
+      data[userId].coins = 0;
+    }
+
+    data[userId].coins += amount;
+
+    saveData(data);
+
+    message.channel.send(`✅ Added **${amount}** coins to <@${userId}>`);
+  }
 };
 
 module.exports = [balanceCommand, AddCoinsCommand];
