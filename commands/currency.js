@@ -8,13 +8,8 @@ if(!fs.existsSync(DATA_FILE)) {
 }
 
 function loadData(){
-  try{
-      JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
-      console.log('successfully saved data');
-  }
-    catch(err){
-    console.log('cannot save data');
-    }
+    JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
+    console.log('successfully saved data');
 }
 
 function saveData(data){
