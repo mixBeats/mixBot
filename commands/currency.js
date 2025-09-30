@@ -1,5 +1,7 @@
 const fs = require("fs");
-const DATA_FILE = "/data/levels.json";
+const path = require("path");
+
+const DATA_FILE = path.join("/data", "levels.json");
 
 if(!fs.existsSync(DATA_FILE)) {
     fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
