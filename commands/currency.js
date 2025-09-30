@@ -1,20 +1,26 @@
 const fs = require("fs");
 const path = require("path");
 
-const DATA_FILE = path.join("/data", "levels.json");
+const DATA_FILE = "/data/levels.json";
 
 if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
 }
 
 function loadData() {
-    const raw = fs.readFileSync(DATA_FILE, "utf8");
-    return JSON.parse(raw);
+  try {
+    return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
+  } catch {
+    return {};
+  }
 }
 
 function saveData(data) {
+  try {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-    console.log("Saved data:", data);
+  } catch (err) {
+    console.error("Failed to save data:", err);
+  }
 }
 
 // Balance Command
@@ -31,6 +37,7 @@ const balanceCommand = {
     }
 
     const coins = data[userId].coins ?? 0;
+
     await message.channel.send(`${message.author.username} Coins: **${coins}**`);
   }
 };
@@ -49,14 +56,12 @@ const addCoinsCommand = {
     const amount = parseInt(args[1], 10);
 
     if (!selectedUser || isNaN(amount)) {
-      return message.reply("Command Use: mb!add-coins @member Amount");
+      return message.reply("Use: mb!add-coins @member Amount");
     }
 
     const userId = selectedUser.id;
 
-    if (!data[userId]) {
-      data[userId] = { coins: 0, xp: 0, level: 1 };
-    }
+    data[userId] ??= { coins: 0, xp: 0, level: 1 };
 
     data[userId].coins = (data[userId].coins ?? 0) + amount;
 
