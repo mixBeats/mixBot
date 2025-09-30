@@ -12,7 +12,12 @@ function loadData(){
 }
 
 function saveData(data){
+  try {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+  console.log("Save successful!");
+} catch (err) {
+  console.error("Failed to save:", err);
+}
 }
 
 // Balance Command
