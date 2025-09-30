@@ -6,7 +6,6 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "lowdb": "^6.0.1"
     "discord.js": "^14.13.0"
   }
 }
