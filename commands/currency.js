@@ -8,7 +8,13 @@ if(!fs.existsSync(DATA_FILE)) {
 }
 
 function loadData(){
-  return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
+  try{
+      return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
+      console.log('successfully saved data');
+  }
+    catch(err){
+    console.log('cannot save data');
+    }
 }
 
 function saveData(data){
@@ -31,9 +37,9 @@ const balanceCommand = {
       saveData(data);
     }
 
-    const user = data[userId];
+    const coins = data[userId].coins;
     
-    message.channel.send(`${message.author.username} Coins: **${user.coins}**`);
+    message.channel.send(`${message.author.username} Coins: **${coins}**`);
   }
 };
 
