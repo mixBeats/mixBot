@@ -12,12 +12,7 @@ function loadData(){
 }
 
 function saveData(data){
-  try {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-  console.log("Save successful!");
-} catch (err) {
-  console.error("Failed to save:", err);
-}
 }
 
 // Balance Command
@@ -30,8 +25,10 @@ const balanceCommand = {
       
     if(!data[userId]) {
       data[userId] = { coins: 0, xp: 0, level: 1 };
-    } else if(data[userId].coins === undefined) {
+    }
+      if(data[userId].coins === undefined) {
       data[userId].coins = 0;
+      saveData(data);
     }
 
     const user = data[userId];
