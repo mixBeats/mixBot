@@ -1,48 +1,35 @@
-const fs = require("fs");
-const path = require("path");
+const { Low } = require('lowdb');
+const { JSONFile } = require('lowdb/node');
+const path = require('path');
 
-const DATA_FILE = "/data/levels.json";
+const DATA_FILE = path.join("/data", "levels.json");
 
-if (!fs.existsSync(DATA_FILE)) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
+const adapter = new JSONFile(DATA_FILE);
+const db = new Low(adapter);
+
+async function initDB() {
+  await db.read();
+  db.data ||= { users: {} };
+  await db.write();
 }
-
-function loadData() {
-  try {
-    return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
-  } catch {
-    return {};
-  }
-}
-
-function saveData(data) {
-  try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-  } catch (err) {
-    console.error("Failed to save data:", err);
-  }
-}
+initDB();
 
 // Balance Command
 const balanceCommand = {
   name: "bal",
   description: "Check your balance",
   async execute(message) {
-    const data = loadData();
+    await db.read();
     const userId = message.author.id;
 
-    if (!data[userId]) {
-      data[userId] = { coins: 0, xp: 0, level: 1 };
-      saveData(data);
-    }
+    db.data.users[userId] ||= { coins: 0, xp: 0, level: 1 };
+    await db.write();
 
-    const coins = data[userId].coins ?? 0;
-
+    const coins = db.data.users[userId].coins;
     await message.channel.send(`${message.author.username} Coins: **${coins}**`);
   }
 };
 
-// Add Coins Command
 const addCoinsCommand = {
   name: "add-coins",
   description: "Add coins to user",
@@ -51,21 +38,19 @@ const addCoinsCommand = {
       return message.reply("❌ You do not have permission to run this command");
     }
 
-    const data = loadData();
     const selectedUser = message.mentions.users.first();
-    const amount = parseInt(args[1], 10);
+    const amount = parseInt(args[1]);
 
     if (!selectedUser || isNaN(amount)) {
       return message.reply("Use: mb!add-coins @member Amount");
     }
 
+    await db.read();
     const userId = selectedUser.id;
 
-    data[userId] ??= { coins: 0, xp: 0, level: 1 };
-
-    data[userId].coins = (data[userId].coins ?? 0) + amount;
-
-    saveData(data);
+    db.data.users[userId] ||= { coins: 0, xp: 0, level: 1 };
+    db.data.users[userId].coins += amount;
+    await db.write();
 
     await message.channel.send(`Added **${amount}** coins to <@${userId}>`);
   }
