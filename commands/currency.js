@@ -1,52 +1,26 @@
 const fs = require("fs");
 const path = require("path");
 
-// ✅ Use Northflank volume if available, otherwise fallback to local "data"
-const DATA_DIR = process.env.DATA_DIR || "/data";
-const DATA_FILE = path.join(DATA_DIR, "levels.json");
+// Path to JSON file (use /data for Northflank volume)
+const DATA_FILE = path.join("/data", "levels.json");
 
-// Make sure folder exists
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
-}
-
-// Make sure file exists
-if (!fs.existsSync(DATA_FILE)) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
-  console.log("📂 Created new levels.json file at", DATA_FILE);
-}
-
-// Load JSON safely
+// --- Helpers ---
 function loadData() {
   try {
-    const raw = fs.readFileSync(DATA_FILE, "utf8");
-    return JSON.parse(raw);
-  } catch (err) {
-    console.error("❌ Error loading data:", err);
+    if (!fs.existsSync(DATA_FILE)) {
+      fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
+    }
+    return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
+  } catch {
     return {};
   }
 }
 
-// Save JSON safely
 function saveData(data) {
-  try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-    console.log("✅ Saved data:", data);
-  } catch (err) {
-    console.error("❌ Error saving data:", err);
-  }
+  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
-// Ensure user data exists
-function getUserData(data, userId) {
-  if (!data[userId]) {
-    data[userId] = { coins: 0, xp: 0, level: 1 };
-    console.log(`ℹ️ New user entry created for ${userId}`);
-  }
-  return data[userId];
-}
-
-// Balance Command
+// --- Balance Command ---
 const balanceCommand = {
   name: "bal",
   description: "Check your balance",
@@ -54,44 +28,46 @@ const balanceCommand = {
     const data = loadData();
     const userId = message.author.id;
 
-    const userData = getUserData(data, userId);
+    if (!data[userId]) {
+      data[userId] = { coins: 0, xp: 0, level: 1 };
+      saveData(data);
+    }
 
-    console.log(`💰 Balance check for ${userId}:`, userData);
-
-    await message.channel.send(`${message.author.username} Coins: **${userData.coins}**`);
+    await message.channel.send(
+      `${message.author.username} Coins: **${data[userId].coins}**`
+    );
   }
 };
 
-// Add Coins Command
+// --- Add Coins Command ---
 const addCoinsCommand = {
   name: "add-coins",
   description: "Add coins to user",
   async execute(message, args) {
     if (!message.member.permissions.has("Administrator")) {
-      return message.reply("❌ You do not have permission to run this command.");
+      return message.reply("❌ You do not have permission.");
     }
 
-    const selectedUser = message.mentions.users.first();
+    const target = message.mentions.users.first();
     const amount = parseInt(args[1], 10);
 
-    if (!selectedUser || isNaN(amount) || amount <= 0) {
+    if (!target || isNaN(amount)) {
       return message.reply("Usage: `!add-coins @member amount`");
     }
 
     const data = loadData();
-    const userId = selectedUser.id;
+    const userId = target.id;
 
-    const userData = getUserData(data, userId);
+    if (!data[userId]) {
+      data[userId] = { coins: 0, xp: 0, level: 1 };
+    }
 
-    console.log(`➕ Before add: ${userId}`, userData);
-
-    userData.coins = (userData.coins || 0) + amount;
-
-    console.log(`✅ After add: ${userId}`, userData);
-
+    data[userId].coins += amount;
     saveData(data);
 
-    await message.channel.send(`Added **${amount}** coins to <@${userId}>`);
+    await message.channel.send(
+      `Added **${amount}** coins to <@${userId}>. New Balance: **${data[userId].coins}**`
+    );
   }
 };
 
