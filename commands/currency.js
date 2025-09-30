@@ -28,7 +28,6 @@ const balanceCommand = {
     }
       if(data[userId].coins === undefined) {
       data[userId].coins = 0;
-      saveData(data);
     }
 
     const coins = data[userId].coins;
