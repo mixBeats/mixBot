@@ -1,56 +1,47 @@
 const fs = require("fs");
 const path = require("path");
 
-
-const PERSISTENT_MOUNT_PATH = "/data"; 
-const DATA_DIR = PERSISTENT_MOUNT_PATH;
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, "data");
 const DATA_FILE = path.join(DATA_DIR, "levels.json");
 
-// Ensure the persistent directory exists before trying to write to it.
 if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
-    console.log(`[SETUP] Created persistent directory: ${DATA_DIR}`);
 }
 
-// Ensure the data file exists with an empty object if it's the first run.
 if (!fs.existsSync(DATA_FILE)) {
     fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
-    console.log(`[SETUP] Created data file: ${DATA_FILE}`);
 }
-
-// --- Data Management Functions ---
 
 function loadData() {
     try {
         const raw = fs.readFileSync(DATA_FILE, "utf8");
         return JSON.parse(raw);
     } catch (err) {
-        console.error(`[LOAD ERROR] Failed to load data from ${DATA_FILE}: ${err.message}`);
-        return {}; 
+        console.error("Error loading data:", err);
+        return {};
     }
 }
 
 function saveData(data) {
     try {
         fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-        // console.log("Saved data successfully."); // Keep logging minimal in production
+        console.log("✅ Saved data successfully to:", DATA_FILE);
     } catch (err) {
-        // This is a critical error, often indicates permission problems on Northflank volume.
-        console.error(`[SAVE ERROR] CRITICAL: Failed to save data to ${DATA_FILE}: ${err.message}`);
+        console.error("Error saving data:", err);
     }
 }
 
 function getUserData(data, userId) {
-    // 💡 IMPROVEMENT: Don't save the whole file just to initialize a user in /bal.
-    // The calling command (add-coins) will handle the save. 
     if (!data[userId]) {
         data[userId] = { coins: 0, xp: 0, level: 1 };
-        // Removed unnecessary saveData(data) from here
+    } else {
+        if (typeof data[userId].coins !== "number") data[userId].coins = 0;
+        if (typeof data[userId].xp !== "number") data[userId].xp = 0;
+        if (typeof data[userId].level !== "number") data[userId].level = 1;
     }
+    saveData(data);
     return data[userId];
 }
-
-// --- Commands ---
 
 // Balance Command
 const balanceCommand = {
@@ -63,11 +54,11 @@ const balanceCommand = {
         const userData = getUserData(data, userId);
         const coins = userData.coins;
 
-        await message.channel.send(`💰 **${message.author.username}** has **${coins}** coins.`);
+        await message.channel.send(`${message.author.username} Coins: **${coins}**`);
     }
 };
 
-// Add Coins Command (Administrator Command)
+// Add Coins Command
 const addCoinsCommand = {
     name: "add-coins",
     description: "Add coins to user",
@@ -77,26 +68,21 @@ const addCoinsCommand = {
         }
 
         const selectedUser = message.mentions.users.first();
-        
-        // 💡 Argument Parsing Fix: Use robust method to find the amount (index 1 is common, but may vary)
         const amount = parseInt(args[1], 10);
 
         if (!selectedUser || isNaN(amount) || amount <= 0) {
-            return message.reply("📝 Use: `!add-coins @member <amount>` (Amount must be a positive number).");
+            return message.reply("Use: `!add-coins @member amount`");
         }
 
         const data = loadData();
         const userId = selectedUser.id;
 
-        const userData = getUserData(data, userId); 
-
-        // Update the balance
+        const userData = getUserData(data, userId);
         userData.coins += amount;
-         
-        // Save the entire data object
-        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 
-        await message.channel.send(`✅ Added **${amount}** coins to <@${userId}>. New balance: **${userData.coins}**.`);
+        saveData(data);
+
+        await message.channel.send(`Added **${amount}** coins to <@${userId}>`);
     }
 };
 
