@@ -58,12 +58,17 @@ const addCoinsCommand = {
             return message.reply("❌ You do not have permission to run this command.");
         }
 
-        const selectedUser = message.mentions.users.first();
-        const amount = parseInt(args[0], 10);
+         const selectedUser = message.mentions.users.first();
 
-        if (!selectedUser || isNaN(amount)) {
-            return message.reply("Use: `!add-coins @member Amount`");
-        }
+         const mentionTag = selectedUser ? `<@${selectedUser.id}>` : null;
+        
+         const amountArg = args.find(arg => arg !== mentionTag && arg !== `<@!${selectedUser.id}>`);
+        
+         const amount = parseInt(amountArg, 10);
+    
+         if (!selectedUser || isNaN(amount)) {
+           return message.reply("Use: `!add-coins @member amount`");
+         }
 
         const data = loadData();
         const userId = selectedUser.id;
