@@ -1,8 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 
-const DATA_DIR = path.join(__dirname, "data");
-const DATA_FILE = path.join(DATA_DIR, "levels.json");
+const PERSISTENT_MOUNT_PATH = "/data"; 
+const DATA_FILE = path.join(PERSISTENT_MOUNT_PATH, "levels.json");
 
 if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
