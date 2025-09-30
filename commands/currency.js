@@ -66,7 +66,7 @@ const addCoinsCommand = {
         const amount = parseInt(args[1], 10);
 
         if (!selectedUser || isNaN(amount)) {
-            return message.reply("Use: `!add-coins @member <amount>` (Amount must be a positive number).");
+            return message.reply("Use: `!add-coins @member Amount`");
         }
 
         const data = loadData();
@@ -78,7 +78,7 @@ const addCoinsCommand = {
         
         saveData(data);
 
-        await message.channel.send(`Added **${amount}** coins to <@${userId}>. New balance: **${userData.coins}**.`);
+        await message.channel.send(`Added **${amount}** coins to <@${userId}>`);
     }
 };
 
