@@ -59,7 +59,7 @@ const addCoinsCommand = {
         }
 
         const selectedUser = message.mentions.users.first();
-        const amount = parseInt(args[1], 10);
+        const amount = parseInt(args[0], 10);
 
         if (!selectedUser || isNaN(amount)) {
             return message.reply("Use: `!add-coins @member Amount`");
