@@ -1,6 +1,5 @@
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const fs = require('fs');
-const path = require('path');
 
 const client = new Client({
   intents: [
@@ -15,7 +14,7 @@ const prefix = "mb!";
 
 const DATA_FILE = "/data/levels.json";
 
-const commandsPath = path.join(__dirname, 'commands');
+const commandsPath = path.join(__dirname, '/commands');
 
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
