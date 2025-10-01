@@ -51,7 +51,7 @@ const addCoinsCommand = {
 const topCommand = {
   name: 'top',
   description: 'Top leaderboard for currency',
-  async execute(message, args) {
+  async execute(message, args, client) {
     const data = await storage.values();
 
     if (!data.length) {
@@ -69,8 +69,8 @@ const topCommand = {
     let leaderboard = "**mixBeats currency leaderboard** \n";
     for(const i = 0; i<users.length; i++){
       const user = await client.users.fetch(users[i].userId).catch(() => null);
-      const name = name ? user.username : "Unknown User";
-      leaderboard += `${i}. ${user.username} - Coins: ${userList[i].coins} \n`;
+      const name = user ? user.username : "Unknown User";
+      leaderboard += `${i}. ${user.username} - Coins: ${users[i].coins} \n`;
     }
 
     message.channel.send(leaderboard || "No data yet");
