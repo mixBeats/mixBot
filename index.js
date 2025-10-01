@@ -15,17 +15,27 @@ const prefix = "mb!";
 
 const DATA_FILE = "/data/levels.json";
 
-const commandFiles = fs.readdirSync("/commands").filter(file => file.endsWith(".js"));
-for (const file of commandFiles) { 
-  const commands = require(/commands/${file});
+const commandsPath = path.join(__dirname, 'commands');
+if (fs.existsSync(commandsPath)) {
+  const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+
+  for (const file of commandFiles) {
+    const commands = require(path.join(commandsPath, file));
+
     if (Array.isArray(commands)) {
-      for (const cmd of commands) client.commands.set(cmd.name, cmd);
-    } 
-    else 
-    { 
+      for (const cmd of commands) {
+        if (cmd.name) client.commands.set(cmd.name, cmd);
+        else console.warn(`Skipping invalid command in ${file}`);
+      }
+    } else if (commands.name) {
       client.commands.set(commands.name, commands);
-    } 
+    } else {
+      console.warn(`Skipping invalid command file: ${file}`);
+    }
   }
+} else {
+  console.warn("Commands folder not found!");
+}
 
 if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
