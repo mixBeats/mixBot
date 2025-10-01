@@ -1,5 +1,7 @@
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const fs = require('fs');
+const path = require('path');
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -13,24 +15,19 @@ const prefix = "mb!";
 
 const DATA_FILE = "/data/levels.json";
 
-function loadCommands(dir) {
-  const files = fs.readdirSync(dir);
-  for (const file of files) {
-    const fullPath = path.join(dir, file);
-    if (fs.statSync(fullPath).isDirectory()) {
-      loadCommands(fullPath);
-    } else if (file.endsWith(".js")) {
-      const command = require(fullPath);
-      if (Array.isArray(command)) {
-        for (const cmd of command) client.commands.set(cmd.name, cmd);
-      } else {
-        client.commands.set(command.name, command);
-      }
-    }
-  }
-}
+const commandsPath = path.join(__dirname, 'commands');
 
-loadCommands("./commands")
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+    const command = require(path.join(commandsPath, file));
+
+    if (Array.isArray(command)) {
+        for (const cmd of command) client.commands.set(cmd.name, cmd);
+    } else {
+        client.commands.set(command.name, command);
+    }
+}
 
 if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
