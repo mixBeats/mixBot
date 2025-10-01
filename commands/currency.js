@@ -1,6 +1,6 @@
 const storage = require('node-persist');
 
-const DATA_DIR = process.env.DATA_DIR || './data';
+const DATA_DIR = '/data';
 storage.init({ dir: DATA_DIR, forgiveParseErrors: true });
 
 // Balance Command
