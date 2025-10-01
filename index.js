@@ -15,9 +15,9 @@ const prefix = "mb!";
 
 const DATA_FILE = "/data/levels.json";
 
-const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
+const commandFiles = fs.readdirSync("/commands").filter(file => file.endsWith(".js"));
 for (const file of commandFiles) { 
-  const commands = require(./commands/${file});
+  const commands = require(/commands/${file});
     if (Array.isArray(commands)) {
       for (const cmd of commands) client.commands.set(cmd.name, cmd);
     } 
