@@ -1,6 +1,8 @@
+const path = require('path');
 const storage = require('node-persist');
 
-const DATA_DIR = '/data';
+const DATA_DIR = path.join(__dirname, 'data');
+
 await storage.init({ dir: DATA_DIR, forgiveParseErrors: true });
 
 // Balance Command
@@ -73,7 +75,7 @@ const currencyLeaderboard = {
       leaderboard += `${i}. ${user.username} - Coins: ${users[i].coins} \n`;
     }
 
-    await message.channel.send(leaderboard || "No data yet");
+    message.channel.send(leaderboard || "No data yet");
   }
 };
 
