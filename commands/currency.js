@@ -52,7 +52,7 @@ const topCommand = {
   name: 'top',
   description: 'Top leaderboard for currency',
   async execute(message, args) {
-    const data = await storage.valuesWithKeyMatch(/.*/);
+    const data = await storage.values();
 
     const users = data.map(entry =>({
       userId: entry.userId,
