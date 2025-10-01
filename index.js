@@ -15,10 +15,14 @@ const DATA_FILE = "/data/levels.json";
 
 client.commands = new Map();
 
-const commandFiles = fs.readdirSync("./commands").filter(f => f.endsWith(".js"));
+const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
 for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
-  client.commands.set(command.name, command);
+    const commands = require(`./commands/${file}`);
+    if (Array.isArray(commands)) {
+        for (const cmd of commands) client.commands.set(cmd.name, cmd);
+    } else {
+        client.commands.set(commands.name, commands);
+    }
 }
 
 if (!fs.existsSync(DATA_FILE)) {
