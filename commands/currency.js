@@ -3,7 +3,14 @@ const storage = require('node-persist');
 
 const DATA_DIR = path.join(__dirname, 'data');
 
-await storage.init({ dir: DATA_DIR, forgiveParseErrors: true });
+async function initStorage() {
+  await storage.init({ dir: DATA_DIR, forgiveParseErrors: true });
+}
+
+initStorage().then(() => {
+  console.log("Storage initialized!");
+  client.login(process.env.TOKEN);
+});
 
 // Balance Command
 const balanceCommand = {
