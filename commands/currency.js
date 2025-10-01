@@ -58,13 +58,13 @@ const topCommand = {
       return message.channel.send("No users found in the database yet!");
     }
 
-    const users = data.map(entry =>({
-      userId: entry.userId,
-      coins: entry.coins || 0
-    }));
-
-    .sort((a, b) => b.coins - a.coins);
-    .slice(0, 10);
+  const users = data
+      .map(entry => ({
+        userId: entry.userId,
+        coins: entry.coins || 0
+      }))
+      .sort((a, b) => b.coins - a.coins)
+      .slice(0, 10);
 
     let leaderboard = "**mixBeats currency leaderboard** \n";
     for(const i = 0; i<users.length; i++){
