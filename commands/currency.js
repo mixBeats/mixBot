@@ -1,7 +1,7 @@
 const storage = require('node-persist');
 
 const DATA_DIR = '/data';
-storage.init({ dir: DATA_DIR, forgiveParseErrors: true });
+await storage.init({ dir: DATA_DIR, forgiveParseErrors: true });
 
 // Balance Command
 const balanceCommand = {
