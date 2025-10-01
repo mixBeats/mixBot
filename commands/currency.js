@@ -79,7 +79,7 @@ const currencyLeaderboard = {
     for (let i = 0; i < users.length; i++) {
       const user = await client.users.fetch(users[i].userId).catch(() => null);
       const name = user ? user.username : "Unknown User";
-      leaderboard += `${i + 1}. ${name} - Coins: ${users[i].coins}\n`;
+      leaderboard += `${i + 1}. ${user.username} - Coins: ${data[i].coins}\n`;
     }
 
     await message.channel.send(leaderboard);
