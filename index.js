@@ -10,23 +10,34 @@ const client = new Client({
   ]
 });
 
-client.commands = new Collection();
-const prefix = "mb!";
-
-const DATA_FILE = "/data/levels.json";
+client.commands = new Map();
 
 const commandsPath = path.join(__dirname, '/commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
-for (const file of commandFiles) {
-    const command = require(path.join(commandsPath, file));
-    
-    if (Array.isArray(command)) {
-        for (const cmd of command) client.commands.set(cmd.name, cmd);
-    } else {
-        client.commands.set(command.name, command);
+function loadCommands(dir) {
+    const files = fs.readdirSync(dir);
+
+    for (const file of files) {
+        const fullPath = path.join(dir, file);
+        const stat = fs.statSync(fullPath);
+
+        if (stat.isDirectory()) {
+            loadCommands(fullPath);
+        } else if (file.endsWith('.js')) {
+            const commandModule = require(fullPath);
+
+            if (Array.isArray(commandModule)) {
+                for (const cmd of commandModule) {
+                    if (cmd.name) client.commands.set(cmd.name, cmd);
+                }
+            } else if (commandModule.name) {
+                client.commands.set(commandModule.name, commandModule);
+            }
+        }
     }
 }
+
+loadCommands(commandsPath);
 
 if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
