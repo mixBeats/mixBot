@@ -13,14 +13,21 @@ const prefix = "mb!";
 
 const DATA_FILE = "/data/levels.json";
 
-const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
-for (const file of commandFiles) {
-    const commands = require(`./commands/${file}`);
-    if (Array.isArray(commands)) {
-        for (const cmd of commands) client.commands.set(cmd.name, cmd);
-    } else {
-        client.commands.set(commands.name, commands);
+function loadCommands(dir) {
+  const files = fs.readdirSync(dir);
+  for (const file of files) {
+    const fullPath = path.join(dir, file);
+    if (fs.statSync(fullPath).isDirectory()) {
+      loadCommands(fullPath);
+    } else if (file.endsWith(".js")) {
+      const command = require(fullPath);
+      if (Array.isArray(command)) {
+        for (const cmd of command) client.commands.set(cmd.name, cmd);
+      } else {
+        client.commands.set(command.name, command);
+      }
     }
+  }
 }
 
 if (!fs.existsSync(DATA_FILE)) {
