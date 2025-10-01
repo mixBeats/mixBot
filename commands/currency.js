@@ -48,4 +48,31 @@ const addCoinsCommand = {
   },
 };
 
-module.exports = [balanceCommand, addCoinsCommand];
+const topCommand = {
+  name: 'top',
+  description: 'Top leaderboard for currency',
+  async execute(message, args) {
+    const data = await storage.valuesWithKeyMatch(/.*/);
+
+    const users = data.map(entry =>({
+      userId: entry.userId,
+      coins: entry.coins || 0
+    }));
+
+    users.sort((a, b) => b.coins - a.coins);
+
+    const userList = users.slice(0, 10);
+
+    let leaderboard = "**mixBeats currency leaderboard** \n";
+    for(const i = 0; i<userList.length; i++){
+      const user = await client.users.fetch(userList[i].userId).catch(() => null);
+      const name = name ? user.username : "Unknown User";
+      leaderboard += `${i}. ${name} - Coins: ${userList[i].coins} \n`;
+    }
+
+    message.channel.send(leaderboard || "No data yet");
+    
+  },
+};
+
+module.exports = [balanceCommand, addCoinsCommand, topCommand];
