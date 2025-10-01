@@ -77,4 +77,4 @@ const topCommand = {
   }
 };
 
-module.exports = {balanceCommand, addCoinsCommand, topCommand};
+module.exports = [balanceCommand, addCoinsCommand, topCommand];
