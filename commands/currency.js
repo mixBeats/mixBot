@@ -14,16 +14,17 @@ const balanceCommand = {
   name: 'bal',
   description: 'Check your balance',
   async execute(message) {
-    
     await ensureStorage();
-    
     const userId = message.author.id;
 
-    data = { userId, coins: 0 };
-    await storage.setItem(userId, data);
-        
-    if (data.coins === undefined || isNaN(data.coins)) data.coins = 0;
-    
+    let data = await storage.getItem(userId);
+    if (!data || typeof data.coins !== 'number') {
+      data = {
+        userId, coins: 0 
+      };
+      await storage.setItem(userId, data);
+    }
+
     await message.channel.send(`${message.author.username} Coins: **${data.coins}**`);
   },
 };
@@ -34,18 +35,20 @@ const addCoinsCommand = {
   async execute(message, args) {
     await ensureStorage();
     if (!message.member.permissions.has('Administrator')) return message.reply('❌ You do not have permission to run this command');
+
     const targetUser = message.mentions.users.first();
     const amount = parseInt(args[1], 10);
-    
     if (!targetUser || isNaN(amount)) return message.reply('Use: `mb!add-coins @user amount`');
+
     const userId = targetUser.id;
-    let coins = await storage.getItem(userId);
-    
-    if (coins === undefined || isNaN(coins)) coins = 0;
-    coins += amount;
-    
-    await storage.setItem(userId, { userId, coins });
-    
+    let data = await storage.getItem(userId);
+    if (!data || typeof data.coins !== 'number') data = {
+      userId, coins: 0 
+    };
+
+    data.coins += amount;
+    await storage.setItem(userId, data);
+
     await message.channel.send(`Added **${amount}** coins to <@${userId}>`);
   },
 };
@@ -56,19 +59,20 @@ const currencyLeaderboard = {
   async execute(message, args, client) {
     await ensureStorage();
     const data = await storage.values();
-    
+
     if (!data.length) return message.channel.send("No users found in the database yet!");
     const users = data
       .map(entry => ({ userId: entry.userId, coins: entry.coins || 0 }))
       .sort((a, b) => b.coins - a.coins)
       .slice(0, 10);
-    
+
     let leaderboard = "**mixBeats currency leaderboard**\n";
     for (let i = 0; i < users.length; i++) {
       const user = await client.users.fetch(users[i].userId).catch(() => null);
       const name = user ? user.username : "Unknown User";
       leaderboard += `${i + 1}. ${name} - Coins: ${users[i].coins}\n`;
     }
+
     message.channel.send(leaderboard);
   },
 };
