@@ -30,6 +30,8 @@ function loadCommands(dir) {
   }
 }
 
+loadCommands("./commands")
+
 if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
 }
