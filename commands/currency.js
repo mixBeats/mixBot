@@ -73,7 +73,7 @@ const currencyLeaderboard = {
       leaderboard += `${i}. ${user.username} - Coins: ${users[i].coins} \n`;
     }
 
-    message.channel.send(leaderboard || "No data yet");
+    await message.channel.send(leaderboard || "No data yet");
   }
 };
 
