@@ -74,8 +74,7 @@ const topCommand = {
     }
 
     message.channel.send(leaderboard || "No data yet");
-    
   }
 };
 
-module.exports = [balanceCommand, addCoinsCommand, topCommand];
+module.exports = {balanceCommand, addCoinsCommand, topCommand};
