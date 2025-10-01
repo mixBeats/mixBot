@@ -54,25 +54,28 @@ const topCommand = {
   async execute(message, args) {
     const data = await storage.values();
 
+    if (!data.length) {
+      return message.channel.send("No users found in the database yet!");
+    }
+
     const users = data.map(entry =>({
       userId: entry.userId,
       coins: entry.coins || 0
     }));
 
-    users.sort((a, b) => b.coins - a.coins);
-
-    const userList = users.slice(0, 10);
+    .sort((a, b) => b.coins - a.coins);
+    .slice(0, 10);
 
     let leaderboard = "**mixBeats currency leaderboard** \n";
-    for(const i = 0; i<userList.length; i++){
-      const user = await client.users.fetch(userList[i].userId).catch(() => null);
+    for(const i = 0; i<users.length; i++){
+      const user = await client.users.fetch(users[i].userId).catch(() => null);
       const name = name ? user.username : "Unknown User";
-      leaderboard += `${i}. ${name} - Coins: ${userList[i].coins} \n`;
+      leaderboard += `${i}. ${user.username} - Coins: ${userList[i].coins} \n`;
     }
 
     message.channel.send(leaderboard || "No data yet");
     
-  },
+  }
 };
 
 module.exports = [balanceCommand, addCoinsCommand, topCommand];
