@@ -1,24 +1,22 @@
-const path = require('path');
 const storage = require('node-persist');
+const path = require('path');
 
 const DATA_DIR = path.join(__dirname, 'data');
 
-async function initStorage() {
-  await storage.init({ dir: DATA_DIR, forgiveParseErrors: true });
+async function ensureStorage() {
+  if (!storage.isInitialized) {
+    await storage.init({ dir: DATA_DIR, forgiveParseErrors: true });
+    storage.isInitialized = true;
+  }
 }
 
-initStorage().then(() => {
-  console.log("Storage initialized!");
-  client.login(process.env.TOKEN);
-});
-
-// Balance Command
 const balanceCommand = {
   name: 'bal',
   description: 'Check your balance',
   async execute(message) {
-    const userId = message.author.id;
+    await ensureStorage();
 
+    const userId = message.author.id;
     let coins = await storage.getItem(userId);
     if (coins === undefined || isNaN(coins)) coins = 0;
 
@@ -26,13 +24,14 @@ const balanceCommand = {
   },
 };
 
-// Add Coins Command
 const addCoinsCommand = {
   name: 'add-coins',
-  description: 'Add coins to user',
+  description: 'Add coins to a user',
   async execute(message, args) {
+    await ensureStorage();
+
     if (!message.member.permissions.has('Administrator')) {
-      return message.reply('❌ You do not have premission to run this command');
+      return message.reply('❌ You do not have permission to run this command');
     }
 
     const targetUser = message.mentions.users.first();
@@ -51,9 +50,7 @@ const addCoinsCommand = {
 
     await storage.setItem(userId, coins);
 
-    await message.channel.send(
-      `Added **${amount}** coins to <@${userId}>`
-    );
+    await message.channel.send(`Added **${amount}** coins to <@${userId}>`);
   },
 };
 
@@ -61,13 +58,15 @@ const currencyLeaderboard = {
   name: 'top',
   description: 'Top leaderboard for currency',
   async execute(message, args, client) {
+    await ensureStorage();
+
     const data = await storage.values();
 
     if (!data.length) {
       return message.channel.send("No users found in the database yet!");
     }
 
-  const users = data
+    const users = data
       .map(entry => ({
         userId: entry.userId,
         coins: entry.coins || 0
@@ -75,14 +74,15 @@ const currencyLeaderboard = {
       .sort((a, b) => b.coins - a.coins)
       .slice(0, 10);
 
-    let leaderboard = "**mixBeats currency leaderboard** \n";
-    for(const i = 0; i<users.length; i++){
+    let leaderboard = "**mixBeats currency leaderboard**\n";
+
+    for (let i = 0; i < users.length; i++) {
       const user = await client.users.fetch(users[i].userId).catch(() => null);
       const name = user ? user.username : "Unknown User";
-      leaderboard += `${i}. ${user.username} - Coins: ${users[i].coins} \n`;
+      leaderboard += `${i + 1}. ${name} - Coins: ${users[i].coins}\n`;
     }
 
-    message.channel.send(leaderboard || "No data yet");
+    await message.channel.send(leaderboard);
   }
 };
 
