@@ -14,11 +14,17 @@ const balanceCommand = {
   name: 'bal',
   description: 'Check your balance',
   async execute(message) {
+    
     await ensureStorage();
+    
     const userId = message.author.id;
-    let coins = await storage.getItem(userId);
-    if (coins === undefined || isNaN(coins)) coins = 0;
-    await message.channel.send(`${message.author.username} Coins: **${coins}**`);
+
+    data = { userId, coins: 0 };
+    await storage.setItem(userId, data);
+        
+    if (data.coins === undefined || isNaN(data.coins)) data.coins = 0;
+    
+    await message.channel.send(`${message.author.username} Coins: **${data.coins}**`);
   },
 };
 
