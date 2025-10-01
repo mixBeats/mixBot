@@ -10,25 +10,22 @@ const client = new Client({
   ]
 });
 
-client.commands = new Map();
-
 client.commands = new Collection();
 const prefix = "mb!";
 
 const DATA_FILE = "/data/levels.json";
 
-const commandsPath = path.join(__dirname, '/commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
-
-for (const file of commandFiles) {
-    const command = require(path.join(commandsPath, file));
-    
-    if (Array.isArray(command)) {
-        for (const cmd of command) client.commands.set(cmd.name, cmd);
-    } else {
-        client.commands.set(command.name, command);
-    }
-}
+const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
+for (const file of commandFiles) { 
+  const commands = require(./commands/${file});
+    if (Array.isArray(commands)) {
+      for (const cmd of commands) client.commands.set(cmd.name, cmd);
+    } 
+    else 
+    { 
+      client.commands.set(commands.name, commands);
+    } 
+  }
 
 if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
