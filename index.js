@@ -61,12 +61,13 @@ client.on('messageCreate', async message => {
 
   const command = client.commands.get(commandName);
   
-  if (command) {
-    try {
-      await command.execute(message, args, client);
-    } catch (err) {
-      message.reply("Cannot run this command");
-    }
+  if (!command) return;
+
+  try {
+    await command.execute(message, args, client)
+  } catch (err) {
+    console.error(`Error running command ${commandName}:`, err);
+    message.reply("Cannot run this command");
   }
   
   if (!message.author || message.author.bot) return;
