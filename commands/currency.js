@@ -78,27 +78,24 @@ const currencyLeaderboard = {
   description: 'Top leaderboard for currency',
   async execute(message, args, client) {
     await ensureStorage();
-    const data = await storage.values();
 
+    const data = await storage.values();
     if (!data.length) return message.channel.send("No users found in the database yet!");
+
     const users = data
-      .map(entry => ({ userId: entry.userId, coins: entry.coins || 0 }))
+      .filter(entry => entry && typeof entry.coins === "number")
       .sort((a, b) => b.coins - a.coins)
       .slice(0, 10);
 
     let leaderboard = "**mixBeats currency leaderboard**\n";
     for (let i = 0; i < users.length; i++) {
-      let user;
-      try {
-        user = await client.users.fetch(users[i].userId);
-      } catch {
-        user = null;
-      }
+      const entry = users[i];
+      const user = await client.users.fetch(entry.userId).catch(() => null);
       const name = user ? user.username : "Unknown User";
-      leaderboard += `${i + 1}. ${name} - Coins: ${users[i].coins}\n`;
+      leaderboard += `${i + 1}. ${name} - Coins: ${entry.coins}\n`;
     }
 
-    message.channel.send(leaderboard);
+    return message.channel.send(leaderboard);
   },
 };
 
