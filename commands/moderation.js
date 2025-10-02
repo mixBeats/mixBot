@@ -16,7 +16,7 @@ const banCommand = {
 
     try {
       await target.ban({ reason });
-      message.channel.send(`Successfully banned **${target.user.tag}** | Reason: ${reason}`);
+      message.channel.send(`Successfully banned **${target.user.tag}** Reason: ${reason}`);
     } catch (err) {
       console.error(err);
       message.reply('❌ Failed to ban this user');
@@ -39,7 +39,7 @@ const kickCommand = {
 
     try {
       await target.kick(reason);
-      message.channel.send(`Successfully kicked **${target.user.tag}** | Reason: ${reason}`);
+      message.channel.send(`Successfully kicked **${target.user.tag}** Reason: ${reason}`);
     } catch (err) {
       console.error(err);
       message.reply('❌ Failed to kick this user');
