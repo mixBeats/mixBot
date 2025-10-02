@@ -27,8 +27,19 @@ const balanceCommand = {
   async execute(message) {
     await ensureStorage();
 
-    const userId = message.author.id;
-    const username = message.author.username;
+    let targetUser = message.mentions.users.first();
+
+    if (!targetUser && args[0]) {
+      try {
+        targetUser = await message.client.users.fetch(args[0]);
+      } catch {
+        return message.reply("❌ Invalid user ID");
+      }
+    }
+    
+    if(!targetUser) targetUser = message.author;
+
+    const userId = targetUser.id;
 
     let data = await storage.getItem(userId);
 
@@ -37,7 +48,7 @@ const balanceCommand = {
       await storage.setItem(userId, data);
     }
 
-    await message.channel.send(`${username}, you have **${data.coins}** coins.`);
+    await message.channel.send(`${targetUser.username} Coins: **${data.coins}**`);
   },
 };
 
