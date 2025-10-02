@@ -109,7 +109,7 @@ client.on('messageCreate', async message => {
     if (userData[userId].xp >= neededXp) {
       userData[userId].level++;
       userData[userId].xp = 0;
-      message.channel.send(`${message.author.username} leveled up to **Level ${userData[userId].level}**! 🎉`);
+      message.channel.send(`<@${message.author.id}> leveled up to **Level ${userData[userId].level}**! 🎉`);
     }
 
     fs.writeFileSync(DATA_FILE, JSON.stringify(userData, null, 2));
