@@ -25,7 +25,15 @@ const balanceCommand = {
   name: 'bal',
   description: 'Check your balance',
   async execute(message) {
-    const data = await getUserData(message.author.id);
+
+    const targetUser = message.mentions.users.first();
+    
+    if (targetUser){
+      const data = await getUserData(targetUser.id);
+    }
+    else{
+      const data = await getUserData(message.author.id);
+    }
     await message.channel.send(`${message.author.username} Coins: **${data.coins}**`);
   },
 };
@@ -99,39 +107,36 @@ const currencyLeaderboard = {
   description: 'Top leaderboard for currency',
   async execute(message, args, client) {
     await ensureStorage();
-    let data = await storage.values();
+    const data = await storage.values();
 
-    if (!data.length) return message.channel.send("No users found in the database yet!");
-
-    const validUsers = [];
-    for (const entry of data) {
-      if (!entry || typeof entry.coins !== "number" || !entry.userId) continue;
-
-      if (isNaN(entry.coins)) entry.coins = 0;
-      await storage.setItem(entry.userId, entry);
-
-      validUsers.push(entry);
+    if (!data.length) {
+      return message.channel.send("No users found in the database yet!");
     }
 
-    if (!validUsers.length) return message.channel.send("No valid users found in the database yet!");
-
-    const topUsers = validUsers
+    const users = data
+      .filter(entry => entry && entry.userId)
+      .map(entry => ({
+        userId: entry.userId,
+        coins: entry.coins || 0
+      }))
       .sort((a, b) => b.coins - a.coins)
       .slice(0, 10);
 
     let leaderboard = "**mixBeats currency leaderboard**\n";
-    for (let i = 0; i < topUsers.length; i++) {
-      const entry = topUsers[i];
-      let userName = "Unknown User";
+    for (let i = 0; i < users.length; i++) {
+      const { userId, coins } = users[i];
+      let username;
       try {
-        const user = await client.users.fetch(entry.userId);
-        if (user) userName = user.username;
-      } catch {}
-      leaderboard += `${i + 1}. ${userName} - Coins: ${entry.coins}\n`;
+        const member = await message.guild.members.fetch(userId);
+        username = member.user.username;
+      } catch {
+        username = `Unknown User (${userId})`;
+      }
+      leaderboard += `${i + 1}. ${username} - Coins: **${coins}**\n`;
     }
 
     return message.channel.send(leaderboard);
-  },
+  }
 };
 
 module.exports = [balanceCommand, addCoinsCommand, removeCoinsCommand, giveCommand, currencyLeaderboard];
