@@ -1,5 +1,4 @@
 const storage = require('node-persist');
-const path = require('path');
 
 const DATA_DIR = '/data';
 
@@ -22,9 +21,7 @@ const balanceCommand = {
 
     let data = await storage.getItem(userId);
     if (!data || typeof data.coins !== 'number') {
-      data = {
-        userId, coins: 0 
-      };
+      data = { userId, coins: 0 };
       await storage.setItem(userId, data);
     }
 
@@ -45,9 +42,7 @@ const addCoinsCommand = {
 
     const userId = targetUser.id;
     let data = await storage.getItem(userId);
-    if (!data || typeof data.coins !== 'number') data = {
-      userId, coins: 0 
-    };
+    if (!data || typeof data.coins !== 'number') data = { userId, coins: 0 };
 
     data.coins += amount;
     await storage.setItem(userId, data);
@@ -69,9 +64,7 @@ const removeCoinsCommand = {
 
     const userId = targetUser.id;
     let data = await storage.getItem(userId);
-    if (!data || typeof data.coins !== 'number') data = {
-      userId, coins: 0 
-    };
+    if (!data || typeof data.coins !== 'number') data = { userId, coins: 0 };
 
     data.coins -= amount;
     await storage.setItem(userId, data);
@@ -95,7 +88,12 @@ const currencyLeaderboard = {
 
     let leaderboard = "**mixBeats currency leaderboard**\n";
     for (let i = 0; i < users.length; i++) {
-      const user = await client.users.fetch(users[i].userId).catch(() => null);
+      let user;
+      try {
+        user = await client.users.fetch(users[i].userId);
+      } catch {
+        user = null;
+      }
       const name = user ? user.username : "Unknown User";
       leaderboard += `${i + 1}. ${name} - Coins: ${users[i].coins}\n`;
     }
@@ -108,46 +106,39 @@ const giveCommand = {
   name: 'give',
   description: 'gives am amount to a member',
   async execute(message, args, client) {
-    
     await ensureStorage();
-    
+
     const targetUser = message.mentions.users.first();
     const amount = parseInt(args[1], 10);
-    
-    if (!targetUser || isNaN(amount)) 
-    {
+
+    if (!targetUser || isNaN(amount)) {
       return message.reply('Use: `mb!give-coins @user amount`');
     }
 
-    let author_userId = message.author.id;
-    let target_userId = targetUser.id;
-    
-    let authorData = await storage.getItem(author_userId);
-    if (!authorData || typeof authorData.coins !== 'number') authorData = {
-      userId, coins: 0 
-    };
+    const author_userId = message.author.id;
+    const target_userId = targetUser.id;
 
-    if(author_userId === target_userId){
+    let authorData = await storage.getItem(author_userId);
+    if (!authorData || typeof authorData.coins !== 'number') authorData = { userId: author_userId, coins: 0 };
+
+    if (author_userId === target_userId) {
       return message.reply("You cannot give coins to  yourself");
     }
 
-    if(authorData.coins < amount){
+    if (authorData.coins < amount) {
       return message.reply("❌ No enough coins");
     }
 
     let targetData = await storage.getItem(target_userId);
-    if (!targetData || typeof targetData.coins !== 'number') {
-      targetData = { userId: targetId, coins: 0 };
-    }
+    if (!targetData || typeof targetData.coins !== 'number') targetData = { userId: target_userId, coins: 0 };
 
     authorData.coins -= amount;
     targetData.coins += amount;
 
-    await storage.setItem(target_userId, authorData);
+    await storage.setItem(author_userId, authorData);
     await storage.setItem(target_userId, targetData);
 
     await message.channel.send(`Gave **${amount}** coins to <@${target_userId}>`);
-    
   }
 };
 
