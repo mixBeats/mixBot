@@ -53,6 +53,30 @@ const addCoinsCommand = {
   },
 };
 
+const removeCoinsCommand = {
+  name: 'remove-coins',
+  description: 'Remove coins to user',
+  async execute(message, args) {
+    await ensureStorage();
+    if (!message.member.permissions.has('Administrator')) return message.reply('❌ You do not have permission to run this command');
+
+    const targetUser = message.mentions.users.first();
+    const amount = parseInt(args[1], 10);
+    if (!targetUser || isNaN(amount)) return message.reply('Use: `mb!remove-coins @user amount`');
+
+    const userId = targetUser.id;
+    let data = await storage.getItem(userId);
+    if (!data || typeof data.coins !== 'number') data = {
+      userId, coins: 0 
+    };
+
+    data.coins -= amount;
+    await storage.setItem(userId, data);
+
+    await message.channel.send(`Removed **${amount}** coins to <@${userId}>`);
+  },
+};
+
 const currencyLeaderboard = {
   name: 'top',
   description: 'Top leaderboard for currency',
@@ -77,4 +101,37 @@ const currencyLeaderboard = {
   },
 };
 
-module.exports = [balanceCommand, addCoinsCommand, currencyLeaderboard];
+const giveCommand = {
+    name: 'give-coins',
+  description: 'gives am amount to a member',
+  async execute(message, args, client) {
+    
+    await ensureStorage();
+    
+    const targetUser = message.mentions.users.first();
+    const amount = parseInt(args[1], 10);
+    if (!targetUser || isNaN(amount)) 
+    {
+      return message.reply('Use: `mb!give-coins @user amount`');
+    }
+    
+    const target_userId = targetUser.id;
+    
+    let target_Person = await storage.getItem(target_userId);
+    let author = await storage.getItem(message.author.id)
+    if (!data || typeof data.coins !== 'number') data = {
+      userId, coins: 0 
+    };
+
+    
+    target_userId.coins += amount;
+    author.coins -= amount;
+    
+    await storage.setItem(target_userId, author);
+
+    await message.channel.send(`Gave **${amount}** coins to <@${target_userId}>`);
+    
+  }
+};
+
+module.exports = [balanceCommand, addCoinsCommand, removeCoinsCommand, currencyLeaderboard, giveCommand];
