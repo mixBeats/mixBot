@@ -80,6 +80,8 @@ const currencyLeaderboard = {
     await ensureStorage();
     let data = await storage.values();
 
+    console.log(data);
+
     if (!data.length) return message.channel.send("No users found in the database yet!");
 
     const validUsers = [];
