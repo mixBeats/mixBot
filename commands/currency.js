@@ -1,5 +1,5 @@
 const storage = require('node-persist');
-const DATA_DIR = '/data';
+const DATA_DIR = '/data/storage';
 
 async function ensureStorage() {
   if (!storage.isInitialized) {
