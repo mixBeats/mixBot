@@ -96,18 +96,23 @@ client.on('messageCreate', async message => {
   if (message.content === prefix + "test") message.channel.send("Test");
 
   if (message.content === prefix + "rank") {
+    const userId = message.author.id;
     const data = userData[userId];
 
-    const sorted = Object.entries(data).sort((a, b) => {
-      if (b[1].level === a[1].level) {
-        return b[1].xp - a[1].xp;
-      }
-      return b[1].level - a[1].level;
+    if (!data) return message.channel.send("You have no data yet!");
+
+    const sorted = Object.entries(userData).sort((a, b) => {
+        if (b[1].level === a[1].level) {
+            return b[1].xp - a[1].xp;
+        }
+        return b[1].level - a[1].level;
     });
-    
+
     const author_rank = sorted.findIndex(([id]) => id === userId);
+
     message.channel.send(`${message.author.username} Level **${data.level}** XP **${data.xp}** Rank: **#${author_rank + 1}**`);
-  }
+}
+
 
   if(message.content === prefix + "lb"){
     const leaderBoardArray = Object.entries(userData);
