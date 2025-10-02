@@ -1,6 +1,4 @@
 const storage = require('node-persist');
-const path = require('path');
-
 const DATA_DIR = '/data';
 
 async function ensureStorage() {
@@ -27,11 +25,8 @@ const balanceCommand = {
   name: 'bal',
   description: 'Check your balance',
   async execute(message) {
-
-    const userId = message.author.id;
-    const name = await message.guild.members.fetch(userId);
-    const data = await getUserData(userId);
-    await message.channel.send(`${name.user.username} Coins: **${data.coins}**`);
+    const data = await getUserData(message.author.id);
+    await message.channel.send(`${message.author.username} Coins: **${data.coins}**`);
   },
 };
 
@@ -73,51 +68,6 @@ const removeCoinsCommand = {
   },
 };
 
-const currencyLeaderboard = {
-  name: 'top',
-  description: 'Top leaderboard for currency',
-  async execute(message, args, client) {
-    await ensureStorage();
-    let data = await storage.values();
-
-    console.log(data);
-
-    if (!data.length) return message.channel.send("No users found in the database yet!");
-
-    const validUsers = [];
-    for (const entry of data) {
-      if (!entry || typeof entry.coins !== "number" || !entry.userId) {
-        continue;
-      }
-
-      if (isNaN(entry.coins)) entry.coins = 0;
-
-      await storage.setItem(entry.userId, entry);
-
-      validUsers.push(entry);
-    }
-
-    if (!validUsers.length) return message.channel.send("No valid users found in the database yet!");
-
-    const users = validUsers
-      .sort((a, b) => b.coins - a.coins)
-      .slice(0, 10);
-
-    let leaderboard = "**mixBeats currency leaderboard**\n";
-    for (let i = 0; i < users.length; i++) {
-      const entry = users[i];
-      let userName = "Unknown User";
-      try {
-        const user = await client.users.fetch(entry.userId);
-        if (user) userName = user.username;
-      } catch {}
-      leaderboard += `${i + 1}. ${userName} - Coins: ${entry.coins}\n`;
-    }
-
-    return message.channel.send(leaderboard);
-  },
-};
-
 const giveCommand = {
   name: 'give',
   description: 'Give an amount to a member',
@@ -144,4 +94,44 @@ const giveCommand = {
   },
 };
 
-module.exports = [balanceCommand, addCoinsCommand, removeCoinsCommand, currencyLeaderboard, giveCommand];
+const currencyLeaderboard = {
+  name: 'top',
+  description: 'Top leaderboard for currency',
+  async execute(message, args, client) {
+    await ensureStorage();
+    let data = await storage.values();
+
+    if (!data.length) return message.channel.send("No users found in the database yet!");
+
+    const validUsers = [];
+    for (const entry of data) {
+      if (!entry || typeof entry.coins !== "number" || !entry.userId) continue;
+
+      if (isNaN(entry.coins)) entry.coins = 0;
+      await storage.setItem(entry.userId, entry);
+
+      validUsers.push(entry);
+    }
+
+    if (!validUsers.length) return message.channel.send("No valid users found in the database yet!");
+
+    const topUsers = validUsers
+      .sort((a, b) => b.coins - a.coins)
+      .slice(0, 10);
+
+    let leaderboard = "**mixBeats currency leaderboard**\n";
+    for (let i = 0; i < topUsers.length; i++) {
+      const entry = topUsers[i];
+      let userName = "Unknown User";
+      try {
+        const user = await client.users.fetch(entry.userId);
+        if (user) userName = user.username;
+      } catch {}
+      leaderboard += `${i + 1}. ${userName} - Coins: ${entry.coins}\n`;
+    }
+
+    return message.channel.send(leaderboard);
+  },
+};
+
+module.exports = [balanceCommand, addCoinsCommand, removeCoinsCommand, giveCommand, currencyLeaderboard];
