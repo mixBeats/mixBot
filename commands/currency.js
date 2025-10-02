@@ -24,11 +24,10 @@ async function getUserData(userId) {
 const balanceCommand = {
   name: 'bal',
   description: 'Check your balance',
-  async execute(message) {
+  async execute(message, args) {
     await ensureStorage();
 
     let targetUser = message.mentions.users.first();
-
     if (!targetUser && args[0]) {
       try {
         targetUser = await message.client.users.fetch(args[0]);
@@ -36,15 +35,12 @@ const balanceCommand = {
         return message.reply("❌ Invalid user ID");
       }
     }
-    
-    if(!targetUser) targetUser = message.author;
+    if (!targetUser) targetUser = message.author;
 
     const userId = targetUser.id;
-
     let data = await storage.getItem(userId);
-
     if (!data || typeof data.coins !== 'number') {
-      data = { coins: 0 };
+      data = { userId, coins: 0 };
       await storage.setItem(userId, data);
     }
 
