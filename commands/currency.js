@@ -27,8 +27,11 @@ const balanceCommand = {
   name: 'bal',
   description: 'Check your balance',
   async execute(message) {
-    const data = await getUserData(message.author.id);
-    await message.channel.send(`${message.author.username} Coins: **${data.coins}**`);
+
+    const userId = message.author.id;
+    const name = await message.guild.members.fetch(userId);
+    const data = await getUserData(userId);
+    await message.channel.send(`${name.user.username} Coins: **${data.coins}**`);
   },
 };
 
@@ -75,16 +78,28 @@ const currencyLeaderboard = {
   description: 'Top leaderboard for currency',
   async execute(message, args, client) {
     await ensureStorage();
-    const data = await storage.values();
+    let data = await storage.values();
 
     if (!data.length) return message.channel.send("No users found in the database yet!");
 
-    const users = data
-      .filter(entry => entry && typeof entry.coins === "number" && entry.userId)
+    const validUsers = [];
+    for (const entry of data) {
+      if (!entry || typeof entry.coins !== "number" || !entry.userId) {
+        continue;
+      }
+
+      if (isNaN(entry.coins)) entry.coins = 0;
+
+      await storage.setItem(entry.userId, entry);
+
+      validUsers.push(entry);
+    }
+
+    if (!validUsers.length) return message.channel.send("No valid users found in the database yet!");
+
+    const users = validUsers
       .sort((a, b) => b.coins - a.coins)
       .slice(0, 10);
-
-    if (!users.length) return message.channel.send("No valid users with coins yet!");
 
     let leaderboard = "**mixBeats currency leaderboard**\n";
     for (let i = 0; i < users.length; i++) {
