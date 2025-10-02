@@ -15,7 +15,7 @@ const balanceCommand = {
   description: 'Check your balance',
   async execute(message) {
     await ensureStorage();
-    const userId = message.authorData.id;
+    const userId = message.author.id;
 
     let data = await storage.getItem(userId);
     if (!data || typeof data.coins !== 'number') {
@@ -25,7 +25,7 @@ const balanceCommand = {
       await storage.setItem(userId, data);
     }
 
-    await message.channel.send(`${message.authorData.username} Coins: **${data.coins}**`);
+    await message.channel.send(`${message.author.username} Coins: **${data.coins}**`);
   },
 };
 
@@ -102,7 +102,7 @@ const currencyLeaderboard = {
 };
 
 const giveCommand = {
-    name: 'give',
+  name: 'give',
   description: 'gives am amount to a member',
   async execute(message, args, client) {
     
