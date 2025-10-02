@@ -80,16 +80,21 @@ const currencyLeaderboard = {
     if (!data.length) return message.channel.send("No users found in the database yet!");
 
     const users = data
-      .filter(entry => entry && typeof entry.coins === "number")
+      .filter(entry => entry && typeof entry.coins === "number" && entry.userId)
       .sort((a, b) => b.coins - a.coins)
       .slice(0, 10);
+
+    if (!users.length) return message.channel.send("No valid users with coins yet!");
 
     let leaderboard = "**mixBeats currency leaderboard**\n";
     for (let i = 0; i < users.length; i++) {
       const entry = users[i];
-      const user = await client.users.fetch(entry.userId).catch(() => null);
-      const name = user ? user.username : "Unknown User";
-      leaderboard += `${i + 1}. ${name} - Coins: ${entry.coins}\n`;
+      let userName = "Unknown User";
+      try {
+        const user = await client.users.fetch(entry.userId);
+        if (user) userName = user.username;
+      } catch {}
+      leaderboard += `${i + 1}. ${userName} - Coins: ${entry.coins}\n`;
     }
 
     return message.channel.send(leaderboard);
