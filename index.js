@@ -93,11 +93,20 @@ client.on('messageCreate', async message => {
   fs.writeFileSync(DATA_FILE, JSON.stringify(userData, null, 2));
 
   // Commands
-  if (message.content === prefix + "hello") message.channel.send("Hello!");
+  if (message.content === prefix + "test") message.channel.send("Test");
 
   if (message.content === prefix + "rank") {
     const data = userData[userId];
-    message.channel.send(`${message.author.username} Level **${data.level}** XP **${data.xp}**`);
+
+    const sorted = Object.entries(data).sort((a, b) => {
+      if (b[1].level === a[1].level) {
+        return b[1].xp - a[1].xp;
+      }
+      return b[1].level - a[1].level;
+    });
+    
+    const author_rank = sorted.findIndex(([id]) => id === userId);
+    message.channel.send(`${message.author.username} Level **${data.level}** XP **${data.xp}** Rank: **#${author_rank + 1}**`);
   }
 
   if(message.content === prefix + "lb"){
