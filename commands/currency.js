@@ -1,11 +1,14 @@
 const storage = require('node-persist');
 const path = require('path');
 
-const DATA_DIR = path.join(__dirname, '../data');
+const DATA_DIR = '/data';
 
 async function ensureStorage() {
   if (!storage.isInitialized) {
-    await storage.init({ dir: DATA_DIR, forgiveParseErrors: true });
+    await storage.init({
+      dir: DATA_DIR,
+      forgiveParseErrors: true
+    });
     storage.isInitialized = true;
   }
 }
