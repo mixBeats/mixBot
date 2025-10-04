@@ -3,7 +3,7 @@ const { getItems } = require('../items');
 const shopCommand = {
   name: 'shop',
   description: 'shows all items in the shop',
-  async execute(message) {
+  async execute(message, args) {
     const items = getItems();
 
     if (items.length === 0) {
