@@ -14,6 +14,10 @@ Currency ----
 \`mb!remove-coins\` - Removes coins from a person (Admin only)
 \`mb!give\` - Gives coins to a member
 \`mb!top\` - Gives top 10 leaderboard for currency
+\`mb!add-items\` - Adds an item (Admin Only)
+\`mb!remove-items\` - Removes an item (Admin Only)
+\`mb!shop\` - Shows the items you can buy in the server
+\`mb!top\` - Gives top 10 leaderboard for currency
 \`mb!bal\` - Checks for your balance
 
 Level ----
