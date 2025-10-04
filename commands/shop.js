@@ -19,7 +19,7 @@ module.exports = [
     }
   },
   {
-  name: 'items-add',
+  name: 'add-items',
   description: 'Adds an item in the shop',
   async execute(message, args) {
   if(!message.member.permissions.has("Administrator")){
@@ -39,7 +39,7 @@ module.exports = [
   },
   
 {
-  name: 'items-remove',
+  name: 'remove-items',
   description: 'Removes an item in the shop',
   async execute(message, args) {
   if(!message.member.permissions.has("Administrator")){
