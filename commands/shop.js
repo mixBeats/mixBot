@@ -35,7 +35,7 @@ module.exports = [
 
   addItem(name, parseInt(price), description);
   message.channel.send(`✅ Successfully made ${name} item`);
-    };
+    }
   },
   
 {
