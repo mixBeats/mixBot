@@ -1,6 +1,6 @@
 const { getItems } = require('../items');
 
-module.exports = {
+const shopCommand = {
   name: 'shop',
   description: 'shows all items in the shop',
   async execute(message) {
@@ -18,3 +18,5 @@ module.exports = {
     message.channel.send(reply);
   }
 };
+
+module.exports[shopCommand];
