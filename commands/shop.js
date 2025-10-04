@@ -1,24 +1,20 @@
-const getItems = require('../items');
+const { getItems } = require('../items');
 
-const shopCommand = {
+module.exports = {
   name: 'shop',
-  description: 'shows all available items in the bot',
+  description: 'shows all items in the shop',
+  async execute(message) {
+    const items = getItems();
 
-    async execute(message) {
-      const items = getItems();
-
-      if(items.length === 0){
-        return message.channel.send("The Shop is empty");
-      }
-
-      let reply = "**mixBeats Shop** \n";
-      items.forEach((item, index) => {
-        reply += `${index}. ${item.name} - ${item.price} coins \n ${item.description} \n`;
-      });
-
-      message.channel.send(reply);
-      
+    if (items.length === 0) {
+      return message.channel.send("The shop is empty");
     }
-};
 
-module.exports = [shopCommand];
+    let reply = "**mixBeats Shop**\n";
+    items.forEach((item, index) => {
+      reply += `**${index}. ${item.name}** - ${item.price} coins\n ${item.description}\n`;
+    });
+
+    message.channel.send(reply);
+  }
+};
