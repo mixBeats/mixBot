@@ -68,13 +68,13 @@ module.exports = [
     const [name, field, ...valueParts] = args;
     const newValue = valueParts.join(" ");
 
-    if(!name || !field || !newValue){
-      return message.reply("Use: `mb!edit-items <name OR price OR description>`")
+    if(!name || !emoji || !field || !newValue){
+      return message.reply("Use: `mb!edit-items <itemName> <new value>`")
     }
 
-    const validFields = ['name', 'price', 'description'];
+    const validFields = ['name', 'emoji', 'price', 'description'];
       if (!validFields.includes(field.toLowerCase())) {
-        return message.reply("❌ You can edit: `name` or `price` or `description`");
+        return message.reply("❌ You can edit: `name` or `emoji` or `price` or `description`");
       }
 
     const success = editItem(name, field, newValue);
