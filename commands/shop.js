@@ -1,4 +1,7 @@
 const { addItem, removeItem, getItems, editItem } = require('../items');
+const { db, ref } = require("./firebase");
+const { get, set, update } = require("firebase/database");
+
 const fs = require('fs');
 const DATA_FILE = './levels.json';
 
