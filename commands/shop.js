@@ -86,7 +86,7 @@ module.exports = [
     
     message.channel.send(`Edited ${name} item`);
     }
-  }
+  },
   
   {
   name: 'buy',
