@@ -1,34 +1,34 @@
-const fs = require('fs');
-const ITEMS_FILE = './items.json';
+const { db, ref, get, set, update } = require("./firebase");
 
-let items = [];
-if (fs.existsSync(ITEMS_FILE)) {
-  items = JSON.parse(fs.readFileSync(ITEMS_FILE));
+const ITEMS_REF = ref(db, "shop/items");
+
+async function getItems() {
+  const snapshot = await get(ITEMS_REF);
+  if (snapshot.exists()) {
+    return Object.values(snapshot.val());
+  }
+  return [];
 }
 
-function saveItems() {
-  fs.writeFileSync(ITEMS_FILE, JSON.stringify(items, null, 2));
+async function addItem(name, emoji, price, description) {
+  const newItem = { name, emoji, price, description };
+  const itemRef = ref(db, `shop/items/${name.toLowerCase()}`);
+  await set(itemRef, newItem);
 }
 
-function addItem(name, emoji, price, description) {
-  items.push({ name, emoji, price, description });
-  saveItems();
+async function removeItem(name) {
+  const itemRef = ref(db, `shop/items/${name.toLowerCase()}`);
+  await set(itemRef, null);
 }
 
-function removeItem(name) {
-  items = items.filter(i => i.name.toLowerCase() !== name.toLowerCase());
-  saveItems();
-}
+async function editItem(name, field, newValue) {
+  const itemRef = ref(db, `shop/items/${name.toLowerCase()}`);
+  const snapshot = await get(itemRef);
+  if (!snapshot.exists()) return false;
 
-function getItems() {
-  return items;
-}
+  const item = snapshot.val();
 
-function editItem(name, field, newValue) {
-  const item = items.find(i => i.name.toLowerCase() === name.toLowerCase());
-  if (!item) return false;
-
-  if (field === 'price') {
+  if (field === "price") {
     const parsed = parseInt(newValue);
     if (isNaN(parsed)) return false;
     item.price = parsed;
@@ -36,7 +36,7 @@ function editItem(name, field, newValue) {
     item[field] = newValue;
   }
 
-  saveItems();
+  await update(itemRef, item);
   return true;
 }
 
