@@ -124,7 +124,7 @@ module.exports = [
       message.channel.send(`<@{userId}> You bought ${item.name} item!`);
       
     }
-  }
+  },
 
 {
   name: 'items',
