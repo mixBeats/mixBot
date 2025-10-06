@@ -49,6 +49,9 @@ try {
   userData = {};
 }
 
+client.userData = userData;
+client.db = db;
+
 client.once('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
