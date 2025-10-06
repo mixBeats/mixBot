@@ -60,7 +60,7 @@ client.on('messageCreate', async message => {
   const commandName = args.shift().toLowerCase();
   const userId = message.author.id;
 
-  if (!userData[userId]) userData[userId] = { coins: 0, xp: 0, level: 1, username: message.author.username };
+  if (!userData[userId]) userData[userId] = { coins: 0, xp: 0, level: 1, username: message.author.username, items: [] };
   userData[userId].username = message.author.username;
 
   try {
