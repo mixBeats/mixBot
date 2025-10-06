@@ -85,4 +85,42 @@ module.exports = [
     message.channel.send(`Edited ${name} item`);
     }
   }
+  
+  {
+    name: 'buy',
+  description: 'Buys an item',
+  async execute(message, args, client) {
+      const userId = message.author.id;
+      const itemName = args.join(" ");
+
+      if(!itemName){
+        return message.reply("❌ You must name an item!");
+      }
+
+       const items = getItems();
+       const item = items.find(i => i.name.toLowerCase() === itemName.toLowerCase());
+
+      if(!item){
+        return message.reply("❌ Item not found");
+      }
+
+      const user = client.userData[userId];
+
+      if(!user){
+        return message.reply("You have no data!");
+      }
+
+      if(user.coins < item.price){
+        return message.reply(`You have no enough coins to buy! Cost: ${item.price} coins`);
+      }
+
+      user.coins -= item.price;
+      user.items.push(item.name);
+
+      // Save data code
+
+      message.channel.send(`<@{userId}> You bought ${item.name} item!`);
+      
+    }
+  }
 ];
