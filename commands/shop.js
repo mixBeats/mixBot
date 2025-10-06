@@ -1,4 +1,6 @@
 const { addItem, removeItem, getItems, editItem } = require('../items');
+const fs = require('fs');
+const DATA_FILE = './levels.json';
 
 module.exports = [
   {
@@ -87,7 +89,7 @@ module.exports = [
   }
   
   {
-    name: 'buy',
+  name: 'buy',
   description: 'Buys an item',
   async execute(message, args, client) {
       const userId = message.author.id;
@@ -117,10 +119,36 @@ module.exports = [
       user.coins -= item.price;
       user.items.push(item.name);
 
-      // Save data code
+      fs.writeFileSync(DATA_FILE, JSON.stringify(client.userData, null, 2));
 
       message.channel.send(`<@{userId}> You bought ${item.name} item!`);
       
+    }
+  }
+
+{
+  name: 'items',
+  description: 'Shows all user items',
+  async execute(message, args, client) {
+
+    const userId = message.author.id;
+    const user = client.userData[userId];
+
+    if(!user.items.length === 0){
+      return message.reply(`You do not have any items yet.`);
+    }
+
+    const allItems = getItems();
+
+    let reply = `${message.author.username}'s Items \n`;
+    user.items.forEach(itemName => {
+      const shopItem = allItems.find(i => i.name.toLowerCase() === itemName.toLowerCase());
+      const emoji = shopItem?.emoji || "⬜";
+      reply += `${emoji} - ${itemName} \n`;
+    });
+
+    message.channel.send(reply);
+    
     }
   }
 ];
