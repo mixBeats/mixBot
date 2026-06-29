@@ -38,6 +38,8 @@ if (fs.existsSync(commandsPath)) {
   console.warn("Commands folder not found!");
 }
 
+// If data already exists, if it doesn't creates it
+
 if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2));
 }
@@ -50,6 +52,8 @@ try {
   userData = {};
 }
 
+// Initialize UserData
+
 client.userData = userData;
 client.db = db;
 
@@ -57,8 +61,12 @@ client.once('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
+console.log(userData);
+
+// Basic Commands
+
 client.on('messageCreate', async message => {
-  if (!message.content.startsWith(prefix) || message.author.bot) return;
+  if (!message.content.startsWith(prefix) || message.author.bot) return; // prevents from accidental respond by bot or non-prefix
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
@@ -108,6 +116,8 @@ client.on('messageCreate', async message => {
       return message.channel.send(leaderboardMessage);
     }
 
+    // LEVEL UP SYSTEM
+
     userData[userId].xp += 10;
     const neededXp = userData[userId].level * 150;
     if (userData[userId].xp >= neededXp) {
@@ -115,6 +125,8 @@ client.on('messageCreate', async message => {
       userData[userId].xp = 0;
       message.channel.send(`<@${message.author.id}> leveled up to **Level ${userData[userId].level}**! 🎉`);
     }
+
+    // Write Levels.json
 
     fs.writeFileSync(DATA_FILE, JSON.stringify(userData, null, 2));
     
