@@ -1,7 +1,6 @@
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
-const { db } = require('./firebase');
 
 const client = new Client({
   intents: [
@@ -55,7 +54,6 @@ try {
 // Initialize UserData
 
 client.userData = userData;
-client.db = db;
 
 client.once('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
